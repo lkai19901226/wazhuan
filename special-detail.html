@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>专题详情 - 挖赚网</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ===== 专题详情页专属样式 ===== */
+    .topic-page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0;
+      background: #f5f5f5;
+      min-height: 100vh;
+    }
+
+    /* 顶部大图封面 */
+    .topic-cover {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, #ff6b35 0%, #ff8f5e 40%, #ffab76 100%);
+      overflow: hidden;
+    }
+    .topic-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.6;
+    }
+    .topic-cover-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 40px 20px 20px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.65));
+      color: #fff;
+    }
+    .topic-cover-overlay h1 {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+    .topic-cover-overlay .topic-subtitle {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    /* 返回按钮 */
+    .topic-back {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: background 0.2s, transform 0.2s;
+      border: none;
+    }
+    .topic-back:hover { background: rgba(0,0,0,0.5); transform: scale(1.05); }
+    .topic-back:active { transform: scale(0.95); }
+    .topic-back svg { width: 18px; height: 18px; }
+
+    /* 元信息栏 */
+    .topic-meta-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 20px;
+      background: #fff;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 12px;
+      color: #999;
+      flex-wrap: wrap;
+    }
+    .topic-meta-bar .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .topic-meta-bar .meta-item svg { width: 13px; height: 13px; flex-shrink: 0; }
+    .topic-meta-bar .meta-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      background: #fff5f0;
+      color: #ff6b35;
+      border-radius: 10px;
+      font-size: 11px;
+    }
+
+    /* 正文内容区 */
+    .topic-content {
+      background: #fff;
+      padding: 20px;
+      font-size: 16px;
+      color: #444;
+      line-height: 1.85;
+      word-break: break-word;
+      overflow-wrap: break-word;
+    }
+    .topic-content p {
+      margin-bottom: 16px;
+    }
+    .topic-content h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #333;
+      margin: 24px 0 12px;
+      padding-left: 12px;
+      border-left: 4px solid #ff6b35;
+      line-height: 1.4;
+    }
+    .topic-content h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin: 22px 0 10px;
+      padding-left: 10px;
+      position: relative;
+    }
+    .topic-content h3::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 4px;
+      bottom: 4px;
+      width: 3px;
+      background: #ff6b35;
+      border-radius: 2px;
+    }
+    .topic-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin: 12px 0;
+      display: block;
+    }
+    .topic-content a {
+      color: #ff6b35;
+      text-decoration: none;
+      border-bottom: 1px dashed #ff6b35;
+    }
+    .topic-content a:hover { border-bottom-style: solid; }
+    .topic-content strong { color: #333; font-weight: 600; }
+    .topic-content ul, .topic-content ol {
+      margin: 10px 0 16px 20px;
+    }
+    .topic-content li {
+      margin-bottom: 8px;
+    }
+    .topic-content blockquote {
+      margin: 16px 0;
+      padding: 12px 16px;
+      background: #fff9f6;
+      border-left: 3px solid #ff6b35;
+      border-radius: 0 6px 6px 0;
+      color: #666;
+      font-size: 15px;
+    }
+    .topic-content hr {
+      border: none;
+      border-top: 1px solid #eee;
+      margin: 24px 0;
+    }
+
+    /* 内嵌APP卡片 */
+    .topic-app-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      background: #fafafa;
+      border-radius: 10px;
+      margin: 14px 0;
+      border: 1px solid #f0f0f0;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .topic-app-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    .topic-app-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ff6b35, #ff8f5e);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .topic-app-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+      margin: 0;
+    }
+    .topic-app-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .topic-app-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 2px;
+    }
+    .topic-app-desc {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 2px;
+    }
+    .topic-app-meta {
+      font-size: 11px;
+      color: #bbb;
+    }
+    .topic-app-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 18px;
+      background: #ff6b35;
+      color: #fff !important;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 20px;
+      text-decoration: none !important;
+      border-bottom: none !important;
+      flex-shrink: 0;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .topic-app-btn:hover {
+      background: #e55a2b;
+      transform: scale(1.03);
+    }
+
+    /* 分隔区块 */
+    .topic-section {
+      background: #fff;
+      margin: 12px 0;
+      padding: 16px 20px;
+    }
+    .topic-section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .topic-section-title h3 {
+      font-size: 17px;
+      font-weight: 600;
+      color: #333;
+      padding-left: 12px;
+      border-left: 4px solid #ff6b35;
+      line-height: 1.2;
+    }
+    .topic-section-more {
+      font-size: 13px;
+      color: #999;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .topic-section-more:hover { color: #ff6b35; }
+    .topic-section-more svg { width: 12px; height: 12px; }
+
+    /* 热门APP列表 */
+    .topic-hot-apps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .topic-hot-app-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f5f5f5;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s;
+    }
+    .topic-hot-app-item:last-child { border-bottom: none; }
+    .topic-hot-app-item:hover { background: #fffaf7; margin: 0 -20px; padding: 12px 20px; }
+    .topic-hot-rank {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .topic-hot-rank.r1 { background: #ff4d4f; }
+    .topic-hot-rank.r2 { background: #ff7a45; }
+    .topic-hot-rank.r3 { background: #ffa940; }
+    .topic-hot-rank.rn { background: #bbb; }
+
+    .topic-hot-app-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #ff6b35, #ff8f5e);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .topic-hot-app-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .topic-hot-app-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .topic-hot-app-name {
+      font-size: 15px;
+      font-weight: 500;
+      color: #333;
+    }
+    .topic-hot-app-meta {
+      font-size: 12px;
+      color: #999;
+      margin-top: 2px;
+    }
+    .topic-hot-app-dl {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 14px;
+      background: #ff6b35;
+      color: #fff;
+      font-size: 12px;
+      border-radius: 14px;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .topic-hot-app-dl:hover { background: #e55a2b; }
+
+    /* 热门文章列表 */
+    .topic-hot-articles {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .topic-hot-article-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f5f5f5;
+      cursor: pointer;
+      text-decoration: none;
+      color: #666;
+      font-size: 14px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .topic-hot-article-item:last-child { border-bottom: none; }
+    .topic-hot-article-item:hover { color: #ff6b35; background: #fffaf7; margin: 0 -20px; padding: 10px 20px; }
+    .topic-hot-article-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ff6b35;
+      flex-shrink: 0;
+    }
+    .topic-hot-article-title {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* 下载排行榜 */
+    .topic-rank-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .topic-rank-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f5f5f5;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s;
+    }
+    .topic-rank-item:last-child { border-bottom: none; }
+    .topic-rank-item:hover { background: #fffaf7; margin: 0 -20px; padding: 12px 20px; }
+
+    /* 标签列表 */
+    .topic-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .topic-tag {
+      display: inline-block;
+      padding: 6px 14px;
+      background: #f5f5f5;
+      color: #666;
+      font-size: 13px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .topic-tag:hover {
+      background: #fff5f0;
+      color: #ff6b35;
+    }
+
+    /* 底部操作栏 */
+    .topic-bottom-bar {
+      position: sticky;
+      bottom: 0;
+      background: #fff;
+      border-top: 1px solid #eee;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 50;
+    }
+    .topic-share-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: #f5f5f5;
+      color: #666;
+      font-size: 14px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .topic-share-btn:hover { background: #e8e8e8; }
+    .topic-share-btn svg { width: 16px; height: 16px; }
+
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .topic-cover { height: 180px; }
+      .topic-cover-overlay h1 { font-size: 19px; }
+      .topic-content { padding: 16px; font-size: 15px; }
+      .topic-content h2 { font-size: 18px; }
+      .topic-content h3 { font-size: 16px; }
+      .topic-section { margin: 10px 0; padding: 14px 16px; }
+      .topic-section-title h3 { font-size: 15px; }
+      .topic-meta-bar { padding: 10px 16px; gap: 10px; font-size: 11px; }
+      .topic-app-card { padding: 12px; gap: 10px; }
+      .topic-app-icon { width: 44px; height: 44px; }
+      .topic-app-btn { padding: 6px 14px; font-size: 12px; }
+    }
+    @media (max-width: 480px) {
+      .topic-cover { height: 150px; }
+      .topic-cover-overlay { padding: 30px 14px 14px; }
+      .topic-cover-overlay h1 { font-size: 17px; }
+      .topic-cover-overlay .topic-subtitle { font-size: 12px; }
+      .topic-content { padding: 14px; font-size: 14px; }
+      .topic-section { padding: 12px 14px; }
+      .topic-bottom-bar { padding: 10px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航栏 -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">
+          <svg viewBox="0 0 64 64" width="36" height="36">
+            <defs><linearGradient id="lg-td" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6b35"/><stop offset="100%" stop-color="#ff8f5e"/></linearGradient></defs>
+            <rect width="64" height="64" rx="14" fill="url(#lg-td)"/>
+            <text x="32" y="43" text-anchor="middle" font-size="30" font-weight="700" fill="#fff" font-family="Arial,sans-serif">挖</text>
+          </svg>
+        </span>
+        <span class="logo-text-group">
+          <span class="logo-text">挖赚网</span>
+          <span class="logo-sub">手机赚钱APP推荐平台</span>
+        </span>
+      </a>
+      <nav class="nav-tabs" id="topicNavTabs"></nav>
+    </div>
+  </header>
+
+  <!-- 专题详情主体 -->
+  <main class="topic-page" id="topicPage">
+    <!-- 动态渲染 -->
+  </main>
+
+  <!-- 底部操作栏 -->
+  <div class="topic-bottom-bar" id="topicBottomBar" style="display:none;">
+    <button class="topic-share-btn" onclick="shareTopic()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      分享
+    </button>
+  </div>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-links" id="footerLinks"></div>
+      <div class="friend-links" id="friendLinks"></div>
+      <div class="footer-info" id="footerInfo"></div>
+    </div>
+  </footer>
+
+  <script src="sync-engine.js"></script>
+  <script>
+    // ===== 专题详情页 - 数据驱动渲染 =====
+    var _topicId = 1;
+    var _siteData = null;
+    var _topicData = null;
+
+    // 图标资源
+    var _clockSvg = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+    var _userSvg = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+    var _eyeSvg = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+    var _tagSvg = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>';
+    var _dlSvg = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>';
+    var _arrowSvg = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>';
+    var _fireSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 23c-4.7 0-8.5-3.8-8.5-8.5 0-3.5 1.8-6.6 4.5-8.2.4-.2.9-.1 1.2.2.3.4.2.9-.1 1.2-1.2.8-2.2 2-2.9 3.3-.1.1-.1.3 0 .4.1.1.3.1.4 0 .6-.7 1.4-1.3 2.3-1.7.1 0 .2-.1.3-.1.2 0 .3.1.4.2.1.1.1.3.1.5-.2 1.3 0 2.6.5 3.7.1.1.2.2.4.2.1 0 .3-.1.3-.2.4-1.2.5-2.5.3-3.8 0-.2 0-.3.1-.5.1-.1.2-.2.4-.2.1 0 .3 0 .4.1 1.4.6 2.5 1.6 3.3 2.9C19.8 10 20 11.3 20 12.5 20 19.2 16.7 23 12 23z"/></svg>';
+
+    async function loadTopic() {
+      var params = new URLSearchParams(window.location.search);
+      _topicId = parseInt(params.get('id')) || 1;
+
+      await SyncEngine.start();
+      SyncEngine.on('dataUpdated', function(e) {
+        _siteData = e.data;
+        _topicData = findTopic();
+        if (_topicData) renderAll();
+      });
+
+      _siteData = SyncEngine.getData();
+      if (!_siteData) _siteData = getFallbackData();
+      _topicData = findTopic();
+      renderAll();
+    }
+
+    function findTopic() {
+      if (!_siteData || !_siteData.special || !_siteData.special.topics) return null;
+      return _siteData.special.topics.find(function(t) { return t.id === _topicId; }) || null;
+    }
+
+    function renderAll() {
+      if (!_topicData) {
+        document.getElementById('topicPage').innerHTML = '<div style="text-align:center;padding:80px 20px;color:#999;">该专题不存在或已下架</div>';
+        return;
+      }
+      renderNavTabs();
+      renderTopicContent();
+      renderHotApps();
+      renderHotArticles();
+      renderDownloadRank();
+      renderFooter();
+      updateSEO();
+      document.getElementById('topicBottomBar').style.display = 'flex';
+    }
+
+    function renderNavTabs() {
+      var navEl = document.getElementById('topicNavTabs');
+      if (!navEl || !_siteData.navTabs) return;
+      var sortedTabs = [].concat(_siteData.navTabs).sort(function(a, b) { return (a.sort || 99) - (b.sort || 99); });
+      navEl.innerHTML = sortedTabs.map(function(tab) {
+        var isActive = tab.id === 'special';
+        return '<a class="nav-item' + (isActive ? ' active' : '') + '" href="index.html#' + tab.id + '">' + tab.name + '</a>';
+      }).join('');
+    }
+
+    function renderTopicContent() {
+      var t = _topicData;
+      document.title = t.seoTitle || (t.title + ' - 挖赚网');
+
+      var coverHtml = t.coverImage
+        ? '<div class="topic-cover"><img src="' + t.coverImage + '" alt="' + t.title + '" onerror="this.style.display=\'none\'"><button class="topic-back" onclick="history.back()"><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2.5\' stroke-linecap=\'round\'><path d=\'M15 6l-6 6 6 6\'/></svg></button><div class="topic-cover-overlay"><h1>' + t.title + '</h1><div class="topic-subtitle">' + (t.subtitle || '') + '</div></div></div>'
+        : '<div class="topic-cover"><button class="topic-back" onclick="history.back()"><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2.5\' stroke-linecap=\'round\'><path d=\'M15 6l-6 6 6 6\'/></svg></button><div class="topic-cover-overlay"><h1>' + t.title + '</h1><div class="topic-subtitle">' + (t.subtitle || '') + '</div></div></div>';
+
+      var tagsHtml = (t.tags || []).map(function(tag) {
+        return '<span class="meta-tag">' + tag + '</span>';
+      }).join('');
+
+      var metaHtml = '<div class="topic-meta-bar">' +
+        '<span class="meta-item">' + _userSvg + (t.author || '挖赚网') + '</span>' +
+        '<span class="meta-item">' + _clockSvg + (t.publishTime ? t.publishTime.slice(0, 10) : '') + '</span>' +
+        '<span class="meta-item">' + _eyeSvg + (t.category || '') + '</span>' +
+        tagsHtml +
+        '</div>';
+
+      var contentHtml = '<div class="topic-content">' + (t.content || '<p>' + t.summary + '</p>') + '</div>';
+
+      document.getElementById('topicPage').innerHTML = coverHtml + metaHtml + contentHtml +
+        '<div class="topic-section" id="hotAppsSection"></div>' +
+        '<div class="topic-section" id="hotArticlesSection"></div>' +
+        '<div class="topic-section" id="downloadRankSection"></div>' +
+        '<div class="topic-section" id="tagsSection"></div>';
+
+      // 标签区
+      renderTags();
+    }
+
+    function renderTags() {
+      var t = _topicData;
+      if (!t.tags || t.tags.length === 0) {
+        document.getElementById('tagsSection').style.display = 'none';
+        return;
+      }
+      document.getElementById('tagsSection').innerHTML =
+        '<div class="topic-section-title"><h3>相关标签</h3></div>' +
+        '<div class="topic-tags">' + t.tags.map(function(tag) {
+          return '<span class="topic-tag" onclick="window.location.href=\'index.html#special?tag=' + encodeURIComponent(tag) + '\'">' + tag + '</span>';
+        }).join('') + '</div>';
+    }
+
+    function getAllApps() {
+      var all = [];
+      if (_siteData.home && _siteData.home.recommend) all = all.concat(_siteData.home.recommend);
+      if (_siteData.home && _siteData.home.latestApps) all = all.concat(_siteData.home.latestApps);
+      if (_siteData.game && _siteData.game.apps) all = all.concat(_siteData.game.apps);
+      if (_siteData.task && _siteData.task.apps) all = all.concat(_siteData.task.apps);
+      return all;
+    }
+
+    function getAppById(id) {
+      var all = getAllApps();
+      return all.find(function(a) { return a.id === id; }) || null;
+    }
+
+    function renderHotApps() {
+      var t = _topicData;
+      var ids = t.hotApps || [];
+      if (ids.length === 0) { document.getElementById('hotAppsSection').style.display = 'none'; return; }
+
+      var apps = [];
+      ids.forEach(function(id) {
+        var app = getAppById(id);
+        if (app) apps.push(app);
+      });
+
+      var rankColors = ['r1', 'r2', 'r3', 'rn', 'rn', 'rn', 'rn', 'rn'];
+
+      var html = '<div class="topic-section-title"><h3>' + _fireSvg + ' 热门APP</h3></div>' +
+        '<div class="topic-hot-apps">' +
+        apps.map(function(app, idx) {
+          var iconHtml = app.icon
+            ? '<img src="/' + app.icon + '" alt="' + app.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">' +
+              '<span style="display:none;width:100%;height:100%;background:linear-gradient(135deg,#ff6b35,#ff8f5e);color:#fff;display:none;align-items:center;justify-content:center;font-size:14px;font-weight:600;">' + app.name.substring(0,2) + '</span>'
+            : '<span style="width:100%;height:100%;background:linear-gradient(135deg,#ff6b35,#ff8f5e);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;">' + app.name.substring(0,2) + '</span>';
+
+          return '<a class="topic-hot-app-item" href="detail.html?id=' + app.id + '&from=special">' +
+            '<span class="topic-hot-rank ' + (rankColors[idx] || 'rn') + '">' + (idx + 1) + '</span>' +
+            '<span class="topic-hot-app-icon">' + iconHtml + '</span>' +
+            '<span class="topic-hot-app-info">' +
+              '<span class="topic-hot-app-name">' + app.name + '</span>' +
+              '<span class="topic-hot-app-meta">' + (app.downloads || 0) + '次下载 · ' + (app.platform || '') + '</span>' +
+            '</span>' +
+            '<span class="topic-hot-app-dl">' + _dlSvg + '下载</span>' +
+            '</a>';
+        }).join('') + '</div>';
+
+      document.getElementById('hotAppsSection').innerHTML = html;
+    }
+
+    function renderHotArticles() {
+      var t = _topicData;
+      var ids = t.hotArticles || [];
+      var articles = (_siteData.special && _siteData.special.articles) ? _siteData.special.articles : [];
+
+      var relatedArticles = [];
+      ids.forEach(function(id) {
+        var a = articles.find(function(a) { return a.id === id; });
+        if (a && a.id !== _topicId) relatedArticles.push(a);
+      });
+
+      if (relatedArticles.length === 0) {
+        // 兜底：显示所有文章（排除当前）
+        relatedArticles = articles.filter(function(a) { return a.id !== _topicId; }).slice(0, 5);
+      }
+      if (relatedArticles.length === 0) { document.getElementById('hotArticlesSection').style.display = 'none'; return; }
+
+      document.getElementById('hotArticlesSection').innerHTML =
+        '<div class="topic-section-title"><h3>热门文章</h3></div>' +
+        '<div class="topic-hot-articles">' +
+        relatedArticles.map(function(a) {
+          return '<a class="topic-hot-article-item" href="' + (a.url || ('article.html?id=' + a.id)) + '">' +
+            '<span class="topic-hot-article-dot"></span>' +
+            '<span class="topic-hot-article-title">' + a.title + '</span>' +
+            _arrowSvg +
+            '</a>';
+        }).join('') + '</div>';
+    }
+
+    function renderDownloadRank() {
+      var t = _topicData;
+      var ids = t.downloadRank || [];
+      if (ids.length === 0) { document.getElementById('downloadRankSection').style.display = 'none'; return; }
+
+      var apps = [];
+      ids.forEach(function(id) {
+        var app = getAppById(id);
+        if (app) apps.push(app);
+      });
+
+      // 按下载量排序
+      apps.sort(function(a, b) { return (b.downloads || 0) - (a.downloads || 0); });
+
+      var rankColors = ['r1', 'r2', 'r3', 'rn', 'rn', 'rn', 'rn', 'rn'];
+
+      document.getElementById('downloadRankSection').innerHTML =
+        '<div class="topic-section-title"><h3>下载排行榜</h3></div>' +
+        '<div class="topic-rank-list">' +
+        apps.map(function(app, idx) {
+          var iconHtml = app.icon
+            ? '<img src="/' + app.icon + '" alt="' + app.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">' +
+              '<span style="display:none;width:100%;height:100%;background:linear-gradient(135deg,#ff6b35,#ff8f5e);color:#fff;display:none;align-items:center;justify-content:center;font-size:14px;font-weight:600;">' + app.name.substring(0,2) + '</span>'
+            : '<span style="width:100%;height:100%;background:linear-gradient(135deg,#ff6b35,#ff8f5e);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;">' + app.name.substring(0,2) + '</span>';
+
+          return '<a class="topic-rank-item" href="detail.html?id=' + app.id + '&from=special">' +
+            '<span class="topic-hot-rank ' + (rankColors[idx] || 'rn') + '">' + (idx + 1) + '</span>' +
+            '<span class="topic-hot-app-icon">' + iconHtml + '</span>' +
+            '<span class="topic-hot-app-info">' +
+              '<span class="topic-hot-app-name">' + app.name + '</span>' +
+              '<span class="topic-hot-app-meta">' + (app.downloads || 0) + '次下载</span>' +
+            '</span>' +
+            '<span class="topic-hot-app-dl">' + _dlSvg + '下载</span>' +
+            '</a>';
+        }).join('') + '</div>';
+    }
+
+    function renderFooter() {
+      var si = _siteData.siteInfo;
+      if (!si) return;
+      var fl = document.getElementById('footerLinks');
+      if (fl && si.footerLinks) {
+        fl.innerHTML = si.footerLinks.map(function(l) { return '<a href="' + l.url + '">' + l.text + '</a>'; }).join('');
+      }
+      var fr = document.getElementById('friendLinks');
+      if (fr && si.friendLinks) {
+        fr.innerHTML = '友情链接：' + si.friendLinks.map(function(l) { return '<a href="' + l.url + '">' + l.text + '</a>'; }).join(' | ');
+      }
+      var fi = document.getElementById('footerInfo');
+      if (fi && si) {
+        var emailHtml = (si.emailVisible !== false && si.email) ? '<span class="footer-email"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/></svg> <a href="mailto:' + si.email + '">' + si.email + '</a></span><br>' : '';
+        fi.innerHTML = emailHtml + (si.copyright || '') + '<br>' + (si.police || '') + ' | ' + (si.icp || '');
+      }
+    }
+
+    function updateSEO() {
+      var t = _topicData;
+      var metaDesc = document.querySelector('meta[name="description"]');
+      if (!metaDesc) {
+        metaDesc = document.createElement('meta');
+        metaDesc.name = 'description';
+        document.head.appendChild(metaDesc);
+      }
+      metaDesc.content = t.seoDesc || t.summary || '';
+
+      var metaKw = document.querySelector('meta[name="keywords"]');
+      if (!metaKw) {
+        metaKw = document.createElement('meta');
+        metaKw.name = 'keywords';
+        document.head.appendChild(metaKw);
+      }
+      metaKw.content = t.seoKeywords || (t.tags ? t.tags.join(',') : '');
+    }
+
+    function shareTopic() {
+      var t = _topicData;
+      var url = window.location.href;
+      var title = t ? t.title : document.title;
+      if (navigator.share) {
+        navigator.share({ title: title, url: url }).catch(function() {});
+      } else {
+        var input = document.createElement('input');
+        input.value = url;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        showToast('链接已复制到剪贴板');
+      }
+    }
+
+    function showToast(msg) {
+      var existing = document.querySelector('.sync-toast');
+      if (existing) existing.remove();
+      var toast = document.createElement('div');
+      toast.className = 'sync-toast';
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      requestAnimationFrame(function() { toast.classList.add('show'); });
+      setTimeout(function() {
+        toast.classList.remove('show');
+        setTimeout(function() { toast.remove(); }, 300);
+      }, 1800);
+    }
+
+    function getFallbackData() {
+      return {
+        siteInfo: { name: "挖赚网", domain: "www.wazhuan.cn", email: "admin@wazhuan.cn", emailVisible: true, copyright: "挖赚网", icp: "渝ICP备2021014403号-4", police: "渝公网安备50023802000211号", footerLinks: [], friendLinks: [] },
+        navTabs: [
+          { id: "home", name: "首页", active: false, sort: 1 },
+          { id: "game", name: "游戏玩试", active: false, sort: 2 },
+          { id: "task", name: "悬赏任务", active: false, sort: 3 },
+          { id: "special", name: "手赚专题", active: true, sort: 4 }
+        ],
+        special: {
+          articles: [],
+          topics: [{
+            id: 1, title: "加载中...", subtitle: "", author: "挖赚网", publishTime: "", category: "",
+            content: "<p>数据加载中，请稍候...</p>",
+            hotApps: [], hotArticles: [], downloadRank: [], tags: [], url: "special-detail.html?id=1"
+          }]
+        },
+        game: { apps: [] }, task: { apps: [] }, home: { recommend: [], latestApps: [] }
+      };
+    }
+
+    document.addEventListener('DOMContentLoaded', function() { loadTopic(); });
+  </script>
+  <script src="back-to-top.js"></script>
+</body>
+</html>

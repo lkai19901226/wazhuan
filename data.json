@@ -1,0 +1,436 @@
+{
+  "siteInfo": {
+    "name": "挖赚网",
+    "domain": "",
+    "email": "admin@wazhua",
+    "emailVisible": false,
+    "copyright": "Copyright © 2025 挖赚网",
+    "icp": "渝ICP备202101440",
+    "police": "渝公网安备500238020",
+    "logo": "",
+    "logoText": "挖赚网",
+    "logoSlogan": "手机赚钱APP推荐平台",
+    "footerLinks": [
+      {
+        "text": "323",
+        "url": "#"
+      }
+    ],
+    "friendLinks": [
+      {
+        "text": "1",
+        "url": ""
+      },
+      {
+        "text": "2",
+        "url": "#"
+      },
+      {
+        "text": "3",
+        "url": "#"
+      },
+      {
+        "text": "4",
+        "url": "#"
+      }
+    ],
+    "hoverBgRecommend": "transparent",
+    "hoverBgSpecial": "transparent",
+    "hoverBgLatestApp": "transparent",
+    "hoverBgRelated": "transparent"
+  },
+  "navTabs": [
+    {
+      "id": "home",
+      "name": "首页",
+      "active": true,
+      "icon": "",
+      "iconVisible": false,
+      "showIcon": true,
+      "sort": 1
+    },
+    {
+      "id": "game",
+      "name": "游戏玩试",
+      "active": false,
+      "icon": "",
+      "iconVisible": false,
+      "showIcon": false,
+      "sort": 2
+    },
+    {
+      "id": "task",
+      "name": "悬赏任务",
+      "active": false,
+      "icon": "",
+      "iconVisible": false,
+      "showIcon": false,
+      "sort": 3
+    },
+    {
+      "id": "special",
+      "name": "手赚专题",
+      "active": false,
+      "icon": "",
+      "iconVisible": false,
+      "showIcon": false,
+      "sort": 4
+    }
+  ],
+  "home": {
+    "recommend": [],
+    "latestApps": []
+  },
+  "game": {
+    "apps": [
+      {
+        "id": 1,
+        "name": "豆豆钻",
+        "downloads": 4518,
+        "url": "#",
+        "icon": "uploads/images/img_1782151226167_x1d0y6.jpg",
+        "platform": "Android/iOS",
+        "appSize": "29.8M",
+        "developer": "厦门博谦时空网络科技有限公司",
+        "withdrawMethod": "微信/支付宝",
+        "category": "游戏试玩",
+        "publishTime": "2026-06-23 01:59:41",
+        "content": "豆豆钻是一款专业游戏试玩赚钱平台，由厦门博谦时空网络科技有限公司推出。平台内有两大赚钱板块，游戏赚和搜索赚，在同类平台中，豆豆钻单价是比较高的。豆豆钻app是一个零成本、高佣金、多任务、稳提现的游戏任务试玩平台，零投入、纯玩游戏、无风险、无套路，平均每天抽出一点时间玩一玩，零花钱到手。\n\n\n\n新用户进行豆豆钻app下载安装后，完成相应要求的每日任务还能额外领取4.2元的现金奖励。游戏赚操作简单、任务多，简单试玩就能快速完成，下至1元上至千元任务皆有，搜索赚秒审任务多，赚得多赚得快。豆豆钻满5元起提现支付宝，100元以内秒到账，大额提现200元起，没有上限。",
+        "features": [
+          "1，选择游戏：进入游戏中心，选择感兴趣的游戏",
+          "2，开始任务：选择游戏进入详情页，查看试玩范围及游戏任务奖励，点击“开始赚钱”下载游戏",
+          "3，安装与授权：安装时选择“继续安装”，请勿“应用商店安装”；启动游戏时允许相关授权，否则将无法获取奖励",
+          "4，确认信息：注册登录游戏，并返回豆豆钻游戏详情页，点击“刷新”查看您的账号信息和游戏数据是否显示，显示偶方可继续试玩",
+          "5，领取奖励：按试玩要求参与游戏，返回豆豆钻游戏详情页，查看奖励是否“已领取”"
+        ],
+        "screenshots": [
+          "uploads/images/img_1782151255750_80fiwz.jpg",
+          "uploads/images/img_1782151259192_rwhvim.jpg",
+          "uploads/images/img_1782151262248_y1q232.jpg"
+        ],
+        "desc": ""
+      },
+      {
+        "id": 2,
+        "name": "游钱花",
+        "downloads": 2342,
+        "url": "#",
+        "icon": "uploads/images/img_1782151404622_98gd90.png",
+        "platform": "Android/iOS",
+        "appSize": "21.72M",
+        "developer": "",
+        "withdrawMethod": "首次1元起提现，后期2元起",
+        "category": "游戏试玩",
+        "publishTime": "2026-06-23 02:03:56",
+        "content": "游钱花是一款玩手机游戏赚钱的APP，让你越玩越有钱！小伙伴们通过完成各种游戏试玩任务，来获得现金和实物奖励。用户完成由游钱花提供的游戏任务，从而获得相应的报酬，此奖励为您的劳动所得、由游钱花以及合作游戏商支付相应报酬。\n\n游钱花优势：\n\n一键开玩：下载安装，无需登录即可游戏，操作简单，随时随地想玩就玩!\n\n精品热游：手机游戏任务最多，游戏最全，每天上新3-5款。经典有趣的游戏，操作简单，轻松上手，打发休闲时光，赶走无聊更多小游戏等你来挑战!\n\n畅聊畅玩：随机匹配，线上邀请，实时分享好游戏，好看的外表，有趣的炅魂都在这里，快来寻找和你志同道合的人吧!\n\n软件特色：软件中的奖励任务随时可以领取，分别从1元-200元任务，数不胜数。领红包游戏可以直接在游戏中绑定微信，1-3分钟到帐。\n\n游钱花测评：游戏中有不同的类型随玩家们自由进行选择，玩家们喜欢玩什么就可以直接进行搜索，在一边打发时间的同同时还可以领取到超级丰厚的红包福利。\n\n游钱花安装：软件只有不到10M大小，高低配手机皆可安装下载畅游。新人引导人性化，3秒安装，3分钟读懂如何手机上玩手游领奖励。不用邀请收徒弟，不用拉新发朋友圈也能赚零花。\n\n",
+        "features": [],
+        "screenshots": [
+          "uploads/images/img_1782151454660_vnw7oi.jpg",
+          "uploads/images/img_1782151457714_pdvxvc.jpg",
+          "uploads/images/img_1782151460901_lln5v2.jpg"
+        ],
+        "desc": ""
+      },
+      {
+        "id": 3,
+        "name": "玩游赚",
+        "downloads": 2313,
+        "url": "#",
+        "icon": "uploads/images/img_1782151601636_s4sit0.png",
+        "platform": "Android/iOS",
+        "appSize": "29.8M",
+        "developer": "上海玩游赚网络科技有限公司",
+        "withdrawMethod": "首次1元起提现，后期2元起",
+        "category": "游戏试玩",
+        "publishTime": "2026-06-23 02:07:10",
+        "content": "玩游赚游戏试玩赚钱APP，靠谱的手机游戏试玩赚钱平台。玩游赚游戏试玩APP提供近百款各种类型可以领奖励的手机游戏，操作简单，任务完成的快，包括角色扮演等等玩法的游戏。每天上新3-5款，经典有趣的游戏。操作简单，轻松上手，打发休闲时光，赶走无聊更多小游戏等你来挑战!\n\n海量游戏\n\n游戏最全，每天上新3-5款。经典有趣的游戏，操作简单，轻松上手，打发休闲时光，赶走无聊更多小游戏等你来挑战!\n\n进入游戏中心，选择感兴趣的游戏。选择游戏进入详情页，查看试玩范围及，游戏任务奖励，点击“开始试玩”下载游戏。\n\n试玩领奖\n\n游戏通关升级领奖励，自助领奖无门槛。\n\n下载安装，无需登录即可游戏，操作简单，随时随地想玩就玩!\n\n注册登录游戏，并返回游戏详，情页，点击“刷新”查看您的账号信息，和游戏数据是否显示，显示后方可继续试玩\n\n友情提示：账号信息未显示，请勿试玩游戏，体验游戏，请注册查看“试玩范围”，游戏数据同步可能需要1-3分钟，若奖励未发放 请耐心等待一会。\n\n",
+        "features": [],
+        "screenshots": [
+          "uploads/images/img_1782151660938_qkzgu5.jpg",
+          "uploads/images/img_1782151663959_nnhpf7.jpg",
+          "uploads/images/img_1782151668871_qmz3hq.jpg"
+        ],
+        "desc": ""
+      }
+    ]
+  },
+  "task": {
+    "apps": [
+      {
+        "id": 1,
+        "name": "喜爱帮",
+        "downloads": 1222313,
+        "url": "#",
+        "icon": "uploads/images/img_1782151821860_oxr8lr.png",
+        "platform": "Android/iOS",
+        "appSize": "22.61MB",
+        "developer": "湖南喜爱科技有限公司",
+        "withdrawMethod": "1元起提现",
+        "category": "悬赏任务",
+        "publishTime": "2026-06-23 02:10:43",
+        "content": "\"喜爱帮\"由湖南喜爱科技有限公司打造的一款新形式的信息悬赏任务平台，以移动应用为载体，为用户提供悬赏任务，让用户在闲暇时间动动小手赚取生活费。\n\n每天众多任务，每个任务的赏金都已托管到喜爱帮，只要您完成悬赏，喜爱帮立即发放赏金，再也不用担心拖欠和受骗。2元起提，0门槛，有钱微信及支付宝随时提，提现秒到账。\n\n【赚钱特点】\n\n1，收益方式多：阅读赚钱、悬赏赚钱、试玩赚钱、看广告赚钱等等；\n\n2，裂变快：三级下线，每级下线每人邀请区区十个人，便可发展成为上千人的大团队；\n\n3，提成高：下级收益13%分红，全网最高，没有之一；\n\n4，门槛低：0.3元起提，用户发布悬赏任务没有会员限制等；\n\n5，邀请好友立得6元现金并享受好友收益13%的高额分红。",
+        "features": [],
+        "screenshots": [
+          "uploads/images/img_1782151872536_xcdsly.jpg",
+          "uploads/images/img_1782151875403_gxsg6c.jpg",
+          "uploads/images/img_1782151878349_x49ph1.jpg"
+        ],
+        "desc": ""
+      },
+      {
+        "id": 4,
+        "name": "小白赚钱",
+        "downloads": 12312,
+        "url": "#",
+        "icon": "uploads/images/img_1782152850087_apsxvb.png",
+        "platform": "Android/iOS",
+        "appSize": "29.8M",
+        "developer": "风云互动（济南）技术开发有限公司",
+        "withdrawMethod": "1元起提现",
+        "category": "悬赏任务",
+        "publishTime": "2026-06-23 02:28:11",
+        "content": "小白赚钱APP是一款线上有偿互助的平台。如果你生活中遇到需要别人帮你“砍一刀”、“助力火车票”之类的需求的时候，有了小白赚钱APP，你就可以不用打扰自己的朋友圈和微信群，只需要悬赏几块钱，就有人帮你解决啦。另一边，假如你在家闲着没事，想要用空闲时间赚点钱的话，可以在小白赚钱APP上承接帮别人砍价等差事，完成别人的求助就可以赚到赏金了。",
+        "features": [],
+        "screenshots": [
+          "uploads/images/img_1782152903864_1ea5wl.jpg",
+          "uploads/images/img_1782152906883_k5li6n.jpg",
+          "uploads/images/img_1782152909728_mbohkx.jpg"
+        ],
+        "desc": "小白赚钱APP是一款线上有偿互助的平台。如果你生活中遇到需要别人帮你“砍一刀”、“助力火车票”之类的需求的时候，有了小白赚钱APP，你就可以不用打扰自己的朋友圈和微信群，只需要悬赏几块钱，就有人帮你解决啦。另一边，假如你在家闲着没事，想要用空闲时间赚点钱的话，可以在小白赚钱APP上承接帮别人砍价等差事，完成别人的求助就可以赚到赏金了。"
+      },
+      {
+        "id": 5,
+        "name": "悬赏蛙",
+        "downloads": 4312,
+        "url": "#",
+        "icon": "uploads/images/img_1782152979316_frj9uw.png",
+        "platform": "Android/iOS",
+        "appSize": "15.3MB",
+        "developer": "珠海领酷网络科技有限公司",
+        "withdrawMethod": "微信/支付宝",
+        "category": "悬赏任务",
+        "publishTime": "2026-06-23 02:30:05",
+        "content": "悬赏蛙APP是一个悬赏、互助、众帮平台，帮人忙领福利！提供调查问卷、数据统计等众包服务。悬赏蛙，让你充分利用自己的碎片时间，简单做悬赏任务，随时随地领福利！面向企业主，我们可以提供大量的真实用户参与到产品测试，帮助企业发现使用问题，优化产品性能，以很低的成本完成产品上线前的测试准备工作。",
+        "features": [
+          "1，平台内拥有类型丰富的悬赏任务，任务单价从0.1-100元不等，每个任务奖励托管到平台，只要完成任务，平台立即发放奖励。",
+          "2，收入满1元可提现，支持提现到微信钱包/支付宝，提现会在24小时内到账。",
+          "3，邀请每位好友可获10%任务奖励提成。"
+        ],
+        "screenshots": [
+          "uploads/images/img_1782153027438_vnr5tn.png",
+          "uploads/images/img_1782153032475_ac00xl.png",
+          "uploads/images/img_1782153035291_seuh78.png"
+        ],
+        "desc": "悬赏蛙APP是一个悬赏、互助、众帮平台，帮人忙领福利！提供调查问卷、数据统计等众包服务。悬赏蛙，让你充分利用自己的碎片时间，简单做悬赏任务，随时随地领福利！面向企业主，我们可以提供大量的真实用户参与到产品测试，帮助企业发现使用问题，优化产品性能，以很低的成本完成产品上线前的测试准备工作。"
+      },
+      {
+        "id": 6,
+        "name": "帮多多",
+        "downloads": 2341,
+        "url": "#",
+        "icon": "uploads/images/img_1782153161071_5s4fyb.png",
+        "platform": "Android/iOS",
+        "appSize": "54.02MB",
+        "developer": "重庆市升隆汇金科技有限责任公司",
+        "withdrawMethod": "微信/支付宝",
+        "category": "悬赏任务",
+        "publishTime": "2026-06-23 02:33:00",
+        "content": "",
+        "features": [
+          "1，一款真实可靠的手机做任务赚钱平台，和趣闲赚、悬赏猫类似，加入无需任何投资；",
+          "2，新人注册送大礼包，软件上提供了超多手机小任务，每天都会更新，任务不限领取；",
+          "3，任务单价1-5元/次，另外平台还有游戏赚钱、视频赚钱、浏览赚钱等超多赚钱方式；",
+          "4，邀请好友一起参与手机任务，可获得最高11元/位现金奖励和两级10%做单分成！"
+        ],
+        "screenshots": [
+          "uploads/images/img_1782153194276_gub0rr.png",
+          "uploads/images/img_1782153197700_fq75v8.png",
+          "uploads/images/img_1782153200996_8lg0yc.png"
+        ],
+        "desc": "帮多多app是我爱赚钱的最新升级版，一款值得大家去做的悬赏赚钱兼职平台，在该平台上，有着各种类型的悬赏任务，想做什么样的任务，这里都能解锁，任务单价还比较高的，做起来也相当的简单，花个几分钟，这个月的零花钱很容易就能到手，你还在等什么呢？赶快上车！"
+      },
+      {
+        "id": 7,
+        "name": "米多多",
+        "downloads": 1231,
+        "url": "#",
+        "icon": "uploads/images/img_1782153251830_anr8rm.jpg",
+        "platform": "Android/iOS",
+        "appSize": "21.72M",
+        "developer": "薪动科技",
+        "withdrawMethod": "微信/支付宝",
+        "category": "悬赏任务",
+        "publishTime": "2026-06-23 02:34:31",
+        "content": "",
+        "features": [
+          "任务丰富：米多多提供大量任务，覆盖了从简单到复杂的不同难度级别，满足不同用户的需求。 ",
+          "快速提现：平台提现门槛较低，满一元即可提现，提现速度快，秒到账。 ",
+          "邀请奖励：邀请新用户加入，老用户可以获得丰厚的奖励。 ",
+          "安全性高：提现快，低门槛，薪资保障，真心产品不套路，用了就知道！"
+        ],
+        "screenshots": [],
+        "desc": "米哆哆（米多多）是一款每天完成任务来赚钱的APP，根据步骤简单试玩就可以获得赏金，帮好友助力、简单注册、体验APP就能赚钱，简单又好赚，参与越多赚的越多，每天任务不定时上新，更有限量福利单等你来抢。\n\n新用户下载注册米哆哆app后完成新手任务可额外获得1.4元，超级简单限7天内完成 2、任务超级多，每天不定时更新，优质用户享有特权和高级权限，助您抢人一步赚的更多 3、满一元即可提现，秒到账，赚钱其实很简单，每天轻松赚10+。"
+      },
+      {
+        "id": 8,
+        "name": "有顺赏",
+        "downloads": 2312,
+        "url": "#",
+        "icon": "uploads/images/img_1782153337012_ukesn0.jpg",
+        "platform": "Android/iOS",
+        "appSize": "21.72M",
+        "developer": "",
+        "withdrawMethod": "微信/支付宝",
+        "category": "悬赏任务",
+        "publishTime": "2026-06-23 02:35:52",
+        "content": "",
+        "features": [],
+        "screenshots": [
+          "uploads/images/img_1782153365128_zv1ouf.jpg",
+          "uploads/images/img_1782153368733_cs05hy.jpg",
+          "uploads/images/img_1782153371845_ocymhj.jpg"
+        ],
+        "desc": "有顺赏，帮你实现零花钱自由。用户可以通过完成各种任务来赚取赏金，提供丰富的任务类型，包括调查问卷、APP下载、游戏试玩等。用户可以根据自己的兴趣和能力选择适合的任务，获得对应任务的奖励，最快1分钟即可审核通过。"
+      },
+      {
+        "id": 9,
+        "name": "企鹅互助",
+        "downloads": 231,
+        "url": "#",
+        "icon": "uploads/images/img_1782153435049_uzcnrw.webp",
+        "platform": "Android/iOS",
+        "appSize": "21.72M",
+        "developer": "企鹅互动（天津）科技有限公司",
+        "withdrawMethod": "1元起提现",
+        "category": "悬赏任务",
+        "publishTime": "2026-06-23 02:37:39",
+        "content": "",
+        "features": [
+          "1，新用户手机注册后再绑定微信，自动秒推送0.1-0.7元的新人奖励，该奖励秒到账微信；",
+          "2，新用户优先完成首页的“新人奖励”任务（限制在7天内完成），可以获得新人现金奖励；",
+          "3，玩家可做多种任务赚钱，另有极速审核专区；同时支持在App内发布任务，众多用户帮您完成；",
+          "4，奖励活动丰富，有新人奖励、每周排行、每日挑战、邀请好友等奖励，另加入了会员等级成长体系；",
+          "5，收益满1元即可提现，支持微信或支付宝，到账速度快，每天可提现1次，每次最高可提现2000元；"
+        ],
+        "screenshots": [
+          "uploads/images/img_1782153479691_qb6b2k.jpg",
+          "uploads/images/img_1782153484853_xlri95.jpg",
+          "uploads/images/img_1782153487618_qc4gop.jpg"
+        ],
+        "desc": "企鹅互助App是一款悬赏任务赚钱平台，由企鹅互动（天津）科技有限公司推出，奖励多多。免费下载企鹅互助，完成任务就能赚钱，新人登陆就有奖励，商家也可以在线发布任务。\n\n企鹅互动（天津）科技有限公司成立于2020年，位于天津市武清区高新产业园，是一家专注于互联网产品开发、服务的新兴互联网公司，员工大部分来自于腾讯、阿里、百度、小米、字节跳动等一线互联网大厂，拥有丰富的从业经验。"
+      },
+      {
+        "id": 10,
+        "name": "每天赚点",
+        "downloads": 4351,
+        "url": "#",
+        "icon": "uploads/images/img_1782153792643_qxucto.png",
+        "platform": "Android/iOS",
+        "appSize": "29.8M",
+        "developer": "深圳市谷从互联网技术服务有限公司",
+        "withdrawMethod": "1元起提现",
+        "category": "悬赏任务",
+        "publishTime": "2026-06-23 02:43:52",
+        "content": "",
+        "features": [
+          "1，签到：每天签到即可免费领取金币。",
+          "2，邀请好友：邀请好友一起玩，还可获取更多奖励，邀请越多，奖励越多。",
+          "3，新人福利：更有新人注册惊喜红包等你来开启。"
+        ],
+        "screenshots": [
+          "uploads/images/img_1782153839348_a7ztaf.jpg",
+          "uploads/images/img_1782153842234_art00g.jpg",
+          "uploads/images/img_1782153845466_jmdsga.jpg"
+        ],
+        "desc": "每天赚点是一款悬赏任务软件，用户可以做任务赚钱，有悬赏任务、游戏任务、视频任务、小程序任务等等，每个用户都有详细的介绍，新手做任务也很快的。在每天赚点做任务每周还有做任务的排行榜，只要做任务的数量达到要求之后就可以获得相应的收入。"
+      },
+      {
+        "id": 11,
+        "name": "秒单APP",
+        "downloads": 12341,
+        "url": "#",
+        "icon": "uploads/images/img_1782156858498_6wtku5.png",
+        "platform": "Android/iOS",
+        "appSize": "21.72M",
+        "developer": "重庆市升隆汇金科技有限责任公司",
+        "withdrawMethod": "1元起提现",
+        "category": "悬赏任务",
+        "publishTime": "2026-06-23 03:34:40",
+        "content": "",
+        "features": [
+          "1，用手机做任务轻松赚零花钱，无任何套路，全天可做，加入无任何门槛；",
+          "2，软件上更新下载、砍价、助力、点赞等任务，每个任务都有操作说明；",
+          "3，任务单价1-10元/次，任务不限领取次数，多劳多得，每个月多赚千元；",
+          "4，邀请好友参与悬赏任务，可获得10元/位现金奖励和两级15%任务分成！",
+          "秒单APP提现说明：秒单收入满1元可申请提现，支持微信和支付宝，每天可申请一次，到账迅速！"
+        ],
+        "screenshots": [
+          "uploads/images/img_1782156895587_vjozr8.jpg",
+          "uploads/images/img_1782156898730_4bw1tx.jpg",
+          "uploads/images/img_1782156902102_8fm9yn.jpg"
+        ],
+        "desc": "秒单APP是一款人气高的做任务赚钱平台，新人注册秒单可领取新手任务。软件上提供了超多简单的赚钱小任务，包括下载注册、点赞关注、砍价助力、电商相关等悬赏任务。单价1-10元/次，按要求完成就能获得大量佣金，1元起随时可提现！"
+      }
+    ]
+  },
+  "special": {
+    "articles": [
+      {
+        "id": 1,
+        "title": "可以直接提现到微信的赚钱游戏",
+        "desc": "可以直接提现到微信的赚钱游戏有哪些",
+        "content": "可以直接提现到微信的赚钱游戏有哪些？如今越来越多的人都想通过游戏赚钱，在选择赚钱游戏也都希望收益可以直接提现到微信。今天，小编来精心挑选了几款无广告无门框的良心赚钱游戏给大家，游戏全部真实有效。玩家们只到选中自己擅长的游戏按照要求试玩通关升级就可以获得收益。",
+        "url": "article.html?id=1"
+      }
+    ],
+    "topics": [
+      {
+        "id": 1,
+        "title": "可以直接提现到微信的赚钱游戏",
+        "subtitle": "盘点几款无广告、零门槛的良心赚钱游戏",
+        "coverImage": "",
+        "author": "挖赚网",
+        "source": "www.wazhuan.cn",
+        "publishTime": "2026-06-23 00:00:00",
+        "category": "游戏赚钱",
+        "tags": [
+          "微信提现",
+          "赚钱游戏",
+          "零门槛"
+        ],
+        "summary": "如今越来越多的人都想通过游戏赚钱，在选择赚钱游戏也都希望收益可以直接提现到微信。今天小编来精心挑选了几款无广告无门槛的良心赚钱游戏给大家。",
+        "content": "<h3>前言</h3><p>现在很多人都在用手机玩游戏赚钱，但是很多APP提现门槛高。今天小编给大家盘点几款<strong>可以直接提现到微信</strong>的赚钱游戏APP，零门槛提现，赚到钱就能直接到微信钱包。</p><h3>1. 赏帮赚</h3><div class=\"topic-app-card\"><div class=\"topic-app-icon\"><img src=\"uploads/images/img_1782151226167_x1d0y6.jpg\" alt=\"赏帮赚\"></div><div class=\"topic-app-info\"><div class=\"topic-app-name\">赏帮赚</div><div class=\"topic-app-desc\">悬赏任务赚钱平台，任务多单价高</div><div class=\"topic-app-meta\">4518次下载 · Android/iOS</div></div><a class=\"topic-app-btn\" href=\"detail.html?id=1&from=special\">立即下载</a></div><p>赏帮赚APP支持<strong>微信提现</strong>，赚够1元即可提现，提现秒到账。任务类型丰富，包括问卷调查、APP下载、游戏试玩等，单价从0.3元到100元不等。</p><h3>2. 豆豆钻</h3><div class=\"topic-app-card\"><div class=\"topic-app-icon\"><img src=\"uploads/images/img_1782151226167_x1d0y6.jpg\" alt=\"豆豆钻\"></div><div class=\"topic-app-info\"><div class=\"topic-app-name\">豆豆钻</div><div class=\"topic-app-desc\">专业游戏试玩赚钱平台</div><div class=\"topic-app-meta\">4518次下载 · Android/iOS</div></div><a class=\"topic-app-btn\" href=\"detail.html?id=1&from=special\">立即下载</a></div><p>豆豆钻是一款专业游戏试玩赚钱平台。平台内有两大赚钱板块：游戏赚和搜索赚，在同类平台中单价是比较高的。满5元起提现支付宝，100元以内秒到账。</p><h3>3. 游钱花</h3><div class=\"topic-app-card\"><div class=\"topic-app-icon\"><img src=\"uploads/images/img_1782151404622_98gd90.png\" alt=\"游钱花\"></div><div class=\"topic-app-info\"><div class=\"topic-app-name\">游钱花</div><div class=\"topic-app-desc\">玩手机游戏赚钱的APP</div><div class=\"topic-app-meta\">2342次下载 · Android/iOS</div></div><a class=\"topic-app-btn\" href=\"detail.html?id=2&from=special\">立即下载</a></div><p>游钱花是一款玩手机游戏赚钱的APP，让你越玩越有钱！通过完成各种游戏试玩任务来获得现金和实物奖励。首次1元起提现，后期2元起。</p><h3>4. 玩游赚</h3><div class=\"topic-app-card\"><div class=\"topic-app-icon\"><img src=\"uploads/images/img_1782151601636_s4sit0.png\" alt=\"玩游赚\"></div><div class=\"topic-app-info\"><div class=\"topic-app-name\">玩游赚</div><div class=\"topic-app-desc\">靠谱的手机游戏试玩赚钱平台</div><div class=\"topic-app-meta\">2313次下载 · Android/iOS</div></div><a class=\"topic-app-btn\" href=\"detail.html?id=3&from=special\">立即下载</a></div><p>玩游赚游戏试玩赚钱APP提供近百款各种类型可以领奖励的手机游戏，操作简单，任务完成得快。每天上新3-5款经典有趣的游戏。</p><h3>总结</h3><p>以上4款就是小编精心挑选的<strong>可以直接提现到微信的赚钱游戏</strong>。这些游戏全部真实有效，无广告无门槛，玩家们只需选中自己擅长的游戏按照要求试玩通关升级就可以获得收益。如果你也想通过游戏赚点零花钱，不妨试试看！</p>",
+        "relatedApps": [
+          1,
+          2,
+          3
+        ],
+        "hotApps": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "hotArticles": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "downloadRank": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "url": "special-detail.html?id=1",
+        "seoTitle": "可以直接提现到微信的赚钱游戏 - 挖赚网",
+        "seoDesc": "盘点几款无广告、零门槛、可以直接提现到微信的良心赚钱游戏APP，全部真实有效。",
+        "seoKeywords": "微信提现,赚钱游戏,游戏赚钱,零门槛提现"
+      }
+    ]
+  }
+}

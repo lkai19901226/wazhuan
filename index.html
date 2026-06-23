@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>手机赚钱APP，正规做任务赚佣金的平台，可以赚钱的软件正版的!</title>
+  <meta name="description" content="挖赚网-手机赚钱APP推荐平台，正规做任务赚佣金的平台，可以赚钱的软件正版的!">
+  <meta name="keywords" content="手机赚钱,赚钱APP,悬赏任务,游戏试玩,赚佣金">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <!-- SVG 图标精灵（内联，零外部依赖） -->
+  <div style="position:absolute;width:0;height:0;overflow:hidden;" aria-hidden="true">
+    <object data="icons.svg" type="image/svg+xml" style="display:none;"></object>
+  </div>
+
+  <!-- 顶部导航栏 -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">
+          <svg viewBox="0 0 64 64" width="36" height="36">
+            <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6b35"/><stop offset="100%" stop-color="#ff8f5e"/></linearGradient></defs>
+            <rect width="64" height="64" rx="14" fill="url(#lg)"/>
+            <text x="32" y="43" text-anchor="middle" font-size="30" font-weight="700" fill="#fff" font-family="Arial,sans-serif">挖</text>
+          </svg>
+        </span>
+        <span class="logo-text-group">
+          <span class="logo-text">挖赚网</span>
+          <span class="logo-sub">手机赚钱APP推荐平台</span>
+        </span>
+      </a>
+      <nav class="nav-tabs" id="navTabs">
+        <!-- 动态渲染导航标签 -->
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- 主要内容区域 -->
+  <main class="main-content">
+    <!-- 首页 -->
+    <section class="tab-page active" id="page-home">
+      <!-- 推荐区域 -->
+      <div class="section-block" id="recommendSection">
+        <div class="section-title">
+          <h2>推荐</h2>
+          <button class="section-refresh-btn" id="recommendRefreshBtn" title="刷新推荐" aria-label="刷新推荐">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+          </button>
+        </div>
+        <!-- 下拉刷新指示器 -->
+        <div class="pull-indicator" id="recommendPullIndicator">
+          <span class="pull-spinner"></span>
+          <span class="pull-text">松开立即刷新</span>
+        </div>
+        <div class="app-recommend-grid" id="recommendGrid">
+          <!-- 动态渲染推荐APP -->
+        </div>
+      </div>
+
+      <!-- 手赚专题区域 -->
+      <div class="section-block" id="homeSpecialSection">
+        <div class="section-title">
+          <h2>手赚专题</h2>
+          <a href="#" class="more-link" data-tab="special">更多 &gt;</a>
+        </div>
+        <div class="special-list" id="homeSpecialList">
+          <!-- 动态渲染手赚专题 -->
+        </div>
+      </div>
+
+      <!-- 最新手赚APP -->
+      <div class="section-block" id="latestAppSection">
+        <div class="section-title">
+          <h2>最新手赚APP</h2>
+        </div>
+        <div class="app-list" id="latestAppList">
+          <!-- 动态渲染最新APP列表 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 游戏玩试 -->
+    <section class="tab-page" id="page-game">
+      <div class="section-block" id="gameAppSection">
+        <div class="section-title">
+          <h2>游戏试玩赚钱APP</h2>
+        </div>
+        <div class="app-list" id="gameAppList">
+          <!-- 动态渲染游戏试玩APP -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 悬赏任务 -->
+    <section class="tab-page" id="page-task">
+      <div class="section-block" id="taskAppSection">
+        <div class="section-title">
+          <h2>悬赏任务赚钱APP</h2>
+        </div>
+        <div class="app-list" id="taskAppList">
+          <!-- 动态渲染悬赏任务APP -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 手赚专题 -->
+    <section class="tab-page" id="page-special">
+      <div class="section-block" id="specialFullSection">
+        <div class="section-title">
+          <h2>手赚专题</h2>
+        </div>
+        <div class="special-full-list" id="specialFullList">
+          <!-- 动态渲染手赚专题完整列表 -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-links" id="footerLinks">
+        <!-- 动态渲染页脚链接 -->
+      </div>
+      <div class="friend-links" id="friendLinks">
+        <!-- 动态渲染友情链接 -->
+      </div>
+      <div class="footer-info" id="footerInfo">
+        <!-- 动态渲染版权信息 -->
+      </div>
+    </div>
+  </footer>
+
+  <!-- 底部移动端导航 -->
+  <nav class="site-mobile-nav" id="mobileNav">
+    <!-- 动态渲染移动端导航 -->
+  </nav>
+
+  <script src="sync-engine.js"></script>
+  <script src="app.js"></script>
+  <script src="back-to-top.js"></script>
+</body>
+</html>

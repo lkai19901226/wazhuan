@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文章详情 - 挖赚网</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .article-page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 15px;
+    }
+    .article-header {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+    .article-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: #999;
+      cursor: pointer;
+      margin-bottom: 15px;
+      transition: color 0.2s;
+    }
+    .article-back svg { width: 16px; height: 16px; }
+    .article-back:hover {
+      color: #ff6b35;
+    }
+    .article-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #333;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+    .article-meta {
+      font-size: 13px;
+      color: #bbb;
+    }
+    .article-body {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      font-size: 16px;
+      color: #555;
+      line-height: 1.8;
+    }
+    .article-body p {
+      margin-bottom: 15px;
+    }
+    .article-body h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin: 20px 0 10px;
+      padding-left: 12px;
+      position: relative;
+    }
+    .article-body h3::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 3px;
+      bottom: 3px;
+      width: 4px;
+      background-color: #ff6b35;
+      border-radius: 2px;
+    }
+    .article-body ul, .article-body ol {
+      margin: 10px 0 15px 20px;
+    }
+    .article-body li {
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+    .article-body .app-card {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border-radius: 8px;
+      background-color: #fafafa;
+      margin-bottom: 10px;
+      gap: 12px;
+    }
+    .article-body .app-card .app-icon-sm {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ff6b35, #ff8f5e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .article-body .app-card .app-icon-sm img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+    .article-body .app-card .app-info-sm {
+      flex: 1;
+    }
+    .article-body .app-card .app-name-sm {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+    }
+    .article-body .app-card .app-desc-sm {
+      font-size: 13px;
+      color: #999;
+    }
+    .article-body .app-card .download-sm {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 4px 12px;
+      background-color: #ff6b35;
+      color: #fff;
+      font-size: 13px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.15s;
+    }
+    .article-body .app-card .download-sm:hover {
+      background-color: #e55a2b;
+      transform: translateY(-1px);
+    }
+    .article-body .app-card .download-sm svg { width: 12px; height: 12px; }
+    .article-body strong {
+      color: #333;
+    }
+    .article-body a {
+      color: #ff6b35;
+    }
+    .related-section {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+    .related-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+    }
+    .related-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .related-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: #666;
+      cursor: pointer;
+      padding: 8px 10px;
+      border-radius: 4px;
+      transition: background-color 0.2s, transform 0.15s;
+      text-decoration: none;
+    }
+    .related-item svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .related-item:hover {
+      background-color: #fff5f0;
+      color: #ff6b35;
+      transform: translateX(3px);
+    }
+    @media (max-width: 480px) {
+      .article-title {
+        font-size: 18px;
+      }
+      .article-body {
+        font-size: 15px;
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航栏 -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">
+          <svg viewBox="0 0 64 64" width="36" height="36">
+            <defs><linearGradient id="lg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6b35"/><stop offset="100%" stop-color="#ff8f5e"/></linearGradient></defs>
+            <rect width="64" height="64" rx="14" fill="url(#lg3)"/>
+            <text x="32" y="43" text-anchor="middle" font-size="30" font-weight="700" fill="#fff" font-family="Arial,sans-serif">挖</text>
+          </svg>
+        </span>
+        <span class="logo-text-group">
+          <span class="logo-text">挖赚网</span>
+          <span class="logo-sub">手机赚钱APP推荐平台</span>
+        </span>
+      </a>
+      <nav class="nav-tabs" id="articleNavTabs">
+        <!-- 动态从 data.json navTabs 渲染 -->
+      </nav>
+    </div>
+  </header>
+
+  <!-- 文章内容区域 -->
+  <main class="article-page">
+    <div class="article-header">
+      <a class="article-back" href="index.html#special">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+        返回手赚专题
+      </a>
+      <h1 class="article-title" id="articleTitle">加载中...</h1>
+      <div class="article-meta" id="articleMeta"></div>
+    </div>
+
+    <div class="article-body" id="articleBody">
+      加载中...
+    </div>
+
+    <!-- 相关推荐 -->
+    <div class="related-section">
+      <div class="related-title">相关专题</div>
+      <div class="related-list" id="relatedList">
+        加载中...
+      </div>
+    </div>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-links" id="footerLinks"></div>
+      <div class="friend-links" id="friendLinks"></div>
+      <div class="footer-info" id="footerInfo"></div>
+    </div>
+  </footer>
+
+  <script src="sync-engine.js"></script>
+  <script>
+    // ===== 启动同步引擎 + 监听实时更新 =====
+    var _articleId = 1;
+    var _articleData = null;
+
+    async function loadArticle() {
+      const params = new URLSearchParams(window.location.search);
+      _articleId = parseInt(params.get('id')) || 1;
+
+      // 启动同步引擎（自动加载数据 + BroadcastChannel + SSE） 
+      await SyncEngine.start();
+
+      // 监听数据更新——后台修改数据后自动重新渲染
+      SyncEngine.on('dataUpdated', function (e) {
+        _articleData = e.data;
+        console.log('[article] 数据更新，来源:', e.source);
+        renderArticleFromData();
+      });
+
+      _articleData = SyncEngine.getData();
+      if (!_articleData) _articleData = getFallbackData();
+
+      renderArticleFromData();
+    }
+
+    // ===== 从数据渲染文章（统一入口） =====
+    function renderArticleFromData() {
+      if (!_articleData) return;
+      updateArticleHeaderFromData();
+      renderArticle(_articleData, _articleId);
+    }
+
+    // ===== 动态渲染导航标签和页脚 =====
+    function updateArticleHeaderFromData() {
+      var si = _articleData.siteInfo;
+      if (!si) return;
+
+      // 动态渲染导航标签（从 data.json navTabs 读取）
+      var navEl = document.getElementById('articleNavTabs');
+      if (navEl && _articleData.navTabs) {
+        var sortedTabs = [].concat(_articleData.navTabs).sort(function(a, b) {
+          return (a.sort || 99) - (b.sort || 99);
+        });
+        navEl.innerHTML = sortedTabs.map(function(tab) {
+          var isActive = tab.id === 'special';
+          return '<a class="nav-item' + (isActive ? ' active' : '') + '" href="index.html#' + tab.id + '">' + tab.name + '</a>';
+        }).join('');
+      }
+    }
+
+    function renderArticle(data, articleId) {
+      const article = data.special.articles.find(a => a.id === articleId);
+
+      if (!article) {
+        document.getElementById('articleTitle').textContent = '文章不存在';
+        document.getElementById('articleBody').innerHTML = '<p>该文章暂未发布。</p>';
+        return;
+      }
+
+      // 渲染标题
+      document.getElementById('articleTitle').textContent = article.title;
+      document.title = article.title + ' - 挖赚网';
+
+      // 渲染摘要信息
+      document.getElementById('articleMeta').textContent = '来源：挖赚网 · 手机赚钱专题';
+
+      // 渲染正文（从 data.json 的 content 字段读取）
+      if (article.content) {
+        document.getElementById('articleBody').innerHTML = article.content;
+      } else {
+        document.getElementById('articleBody').innerHTML = '<p>' + article.desc + '</p><p>更多内容正在编写中，敬请期待...</p>';
+      }
+
+      // 渲染相关专题（排除当前文章）
+      var articleIconSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/></svg>';
+      var related = data.special.articles.filter(function(a) { return a.id !== articleId; });
+      var relatedListEl = document.getElementById('relatedList');
+      relatedListEl.innerHTML = related.map(function(a) {
+        return '<a class="related-item" href="article.html?id=' + a.id + '">' + articleIconSvg + a.title + '</a>';
+      }).join('');
+
+      // 渲染页脚
+      renderFooter(data);
+    }
+
+    function renderFooter(data) {
+      const footerLinksEl = document.getElementById('footerLinks');
+      if (footerLinksEl && data.siteInfo.footerLinks) {
+        footerLinksEl.innerHTML = data.siteInfo.footerLinks.map(link =>
+          `<a href="${link.url}">${link.text}</a>`
+        ).join('');
+      }
+      const friendLinksEl = document.getElementById('friendLinks');
+      if (friendLinksEl && data.siteInfo.friendLinks) {
+        friendLinksEl.innerHTML = '友情链接：' + data.siteInfo.friendLinks.map(link =>
+          `<a href="${link.url}">${link.text}</a>`
+        ).join(' | ');
+      }
+      const footerInfoEl = document.getElementById('footerInfo');
+      if (footerInfoEl && data.siteInfo) {
+        var mailIconSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4l-10 8L2 4"/></svg>';
+        var emailVisible = data.siteInfo.emailVisible !== false;
+        var email = emailVisible ? (data.siteInfo.email || '') : '';
+        var emailHtml = email ? '<span class="footer-email">' + mailIconSvg + ' <a href="mailto:' + email + '">' + email + '</a></span><br>' : '';
+        footerInfoEl.innerHTML = emailHtml + (data.siteInfo.copyright || '') + '<br>' + (data.siteInfo.police || '') + ' | ' + (data.siteInfo.icp || '');
+      }
+    }
+
+    function getFallbackData() {
+      return {
+        siteInfo: { name: "挖赚网", domain: "www.wazhuan.cn", email: "", emailVisible: true, copyright: "挖赚网", icp: "渝ICP备2021014403号-4", police: "渝公网安备50023802000211号", footerLinks: [{ text: "关于本站", url: "#" }, { text: "网站地图", url: "#" }, { text: "商业合作", url: "#" }, { text: "广告报价", url: "#" }], friendLinks: [{ text: "手机赚钱", url: "#" }, { text: "挖赚网", url: "#" }] },
+        special: {
+          articles: [
+            { id: 1, title: "可以直接提现到微信的赚钱游戏", desc: "盘点目前可以直接提现到微信的赚钱游戏APP，零门槛提现，赚到钱就能直接到微信钱包。", url: "article.html?id=1", content: "<p>现在很多人都在用手机玩游戏赚钱，但是很多APP提现门槛高。今天小编给大家盘点几款<strong>可以直接提现到微信</strong>的赚钱游戏APP，零门槛提现，赚到钱就能直接到微信钱包。</p><h3>1. 趣闲赚</h3><p>趣闲赚APP支持<strong>微信提现</strong>，赚够1元即可提现，提现秒到账。</p><h3>2. 乐助客</h3><p>乐助客是一款0成本做任务赚钱平台，<strong>赚够1元即可提现到微信</strong>，到账速度快。</p><h3>3. 赏帮赚</h3><p>赏帮赚支持<strong>微信零门槛提现</strong>，提现秒到账。</p><h3>4. 豆豆钻</h3><p>豆豆钻玩游戏即可赚取金币，金币可以直接<strong>提现到微信</strong>，最低1元起提。</p>" },
+            { id: 2, title: "无广告赚钱游戏，无广告无门槛挣钱游戏", desc: "推荐几款无广告、无门槛的挣钱游戏，纯净体验，赚钱更舒心。", url: "article.html?id=2", content: "<p>很多手机赚钱APP满屏广告，严重影响体验。今天小编推荐几款<strong>无广告、无门槛</strong>的挣钱游戏APP。</p><h3>1. 玩游赚</h3><p>界面清爽<strong>无广告干扰</strong>，玩游戏即可获得金币奖励。</p><h3>2. 豆豆钻</h3><p><strong>无广告弹窗</strong>，界面简洁，最低1元即可提现。</p><h3>3. 游钱花</h3><p><strong>无广告打扰</strong>，纯净游戏体验。</p>" },
+            { id: 3, title: "赏帮赚一样的平台，赏帮赚类似的平台有哪些", desc: "整理了与赏帮赚类似的悬赏任务赚钱平台。", url: "article.html?id=3", content: "<p>很多朋友想知道还有哪些<strong>赏帮赚一样的平台</strong>。今天小编整理了几款与赏帮赚类似的悬赏任务赚钱APP。</p><h3>1. 趣闲赚</h3><p>和赏帮赚非常类似，也是一款<strong>悬赏任务赚钱</strong>APP。</p><h3>2. 乐助客</h3><p>和赏帮赚功能相似，都是<strong>悬赏任务赚钱平台</strong>。</p><h3>3. 多趣赚</h3><p>任务类型丰富，佣金可观。</p><h3>4. 众人帮</h3><p>久经时间考验的任务悬赏平台，老牌靠谱。</p>" },
+            { id: 4, title: "做任务赚佣金的平台，靠谱悬赏任务平台", desc: "推荐靠谱的做任务赚佣金平台，经过实测验证，提现稳定，任务真实。", url: "article.html?id=4", content: "<p>小编给大家推荐几款<strong>靠谱的做任务赚佣金平台</strong>，经过实测验证，提现稳定，任务真实。</p><h3>1. 赏帮赚</h3><p>目前最火的<strong>靠谱悬赏任务平台</strong>之一，提现秒到账。</p><h3>2. 趣闲赚</h3><p><strong>提现稳定秒到账</strong>，任务真实有效。</p><h3>3. 乐助客</h3><p>靠谱的0成本赚钱平台，提现门槛低。</p><h3>4. 众人帮</h3><p>久经时间考验，老牌靠谱。</p>" },
+            { id: 5, title: "手机赚钱APP排行榜2025最新版", desc: "2025年最新手机赚钱APP排行榜。", url: "article.html?id=5", content: "<p>2025年手机赚钱APP哪个最好？小编整理了<strong>最新手机赚钱APP排行榜</strong>。</p><h3>🏆 TOP 1：乐助客</h3><p>以<strong>762次下载</strong>位列第一。</p><h3>🏆 TOP 2：每天赚点</h3><p>以<strong>641次下载</strong>位列第二。</p><h3>🏆 TOP 3：多趣赚</h3><p>以<strong>454次下载</strong>位列第三。</p><h3>🏆 TOP 4：赏帮赚</h3><p>以<strong>453次下载</strong>位列第四。</p><h3>🏆 TOP 5：趣闲赚</h3><p>以<strong>401次下载</strong>位列第五。</p>" },
+            { id: 6, title: "零投资赚钱方法，不用投资就能赚钱的APP", desc: "整理了零投资就能赚钱的APP列表，所有平台0成本参与。", url: "article.html?id=6", content: "<p>小编整理了几款<strong>零投资就能赚钱的APP</strong>，所有平台0成本参与，做任务即可赚取佣金。</p><h3>1. 乐助客</h3><p><strong>0成本做任务赚钱平台</strong>，赚够1元即可提现。</p><h3>2. 趣闲赚</h3><p><strong>零投资赚钱</strong>APP，注册即可领取新手任务奖励。</p><h3>3. 赏帮赚</h3><p><strong>0成本悬赏任务平台</strong>，提现秒到账。</p><h3>4. 众人帮</h3><p><strong>零投资任务悬赏平台</strong>，任务多，提现快。</p>" }
+          ]
+        }
+      };
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      loadArticle();
+    });
+  </script>
+  <script src="back-to-top.js"></script>
+</body>
+</html>

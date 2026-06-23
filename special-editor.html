@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>专题编辑器 - 挖赚网后台</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f0f2f5; color: #333; }
+
+    .topbar { position: fixed; top: 0; left: 0; right: 0; height: 56px; background: #001529; color: #fff; display: flex; align-items: center; padding: 0 24px; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .topbar-logo { font-size: 18px; font-weight: 700; }
+    .topbar-logo span { color: #ff6b35; }
+    .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .topbar-link { color: #bbb; font-size: 13px; text-decoration: none; padding: 6px 12px; border-radius: 6px; transition: color 0.2s, background 0.2s; }
+    .topbar-link:hover { color: #ff6b35; background: rgba(255,255,255,0.06); }
+
+    .main { margin-top: 56px; display: flex; height: calc(100vh - 56px); }
+
+    /* 左侧列表 */
+    .sidebar { width: 280px; background: #fff; border-right: 1px solid #e8e8e8; overflow-y: auto; flex-shrink: 0; }
+    .sidebar-header { padding: 16px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+    .sidebar-header h3 { font-size: 15px; font-weight: 600; }
+    .sidebar-list { padding: 8px; }
+    .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 8px; cursor: pointer; transition: background 0.2s; margin-bottom: 4px; }
+    .sidebar-item:hover { background: #f5f5f5; }
+    .sidebar-item.active { background: #fff5f0; color: #ff6b35; }
+    .sidebar-item .item-title { font-size: 14px; font-weight: 500; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sidebar-item .item-time { font-size: 11px; color: #bbb; }
+    .sidebar-item .item-del { opacity: 0; font-size: 12px; color: #ff4d4f; cursor: pointer; padding: 2px 6px; border-radius: 4px; transition: opacity 0.2s; }
+    .sidebar-item:hover .item-del { opacity: 1; }
+    .sidebar-item .item-del:hover { background: #fff1f0; }
+
+    /* 右侧编辑区 */
+    .editor { flex: 1; overflow-y: auto; padding: 24px; }
+    .editor-empty { text-align: center; padding: 100px 20px; color: #ccc; }
+    .editor-empty svg { opacity: 0.2; margin-bottom: 16px; }
+
+    .form-card { background: #fff; border-radius: 10px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .form-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 8px; }
+    .form-card h3::before { content: ''; width: 4px; height: 18px; background: #ff6b35; border-radius: 2px; }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-grid.col-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { font-size: 13px; font-weight: 500; color: #666; }
+    .form-group label .hint { font-size: 11px; color: #bbb; font-weight: 400; }
+    .form-group input, .form-group textarea, .form-group select {
+      padding: 8px 12px; border: 1px solid #d9d9d9; border-radius: 6px; font-size: 14px; font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s; outline: none; background: #fff;
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      border-color: #ff6b35; box-shadow: 0 0 0 2px rgba(255,107,53,0.1);
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+    /* 富文本编辑器工具栏 */
+    .rte-toolbar {
+      display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 10px;
+      background: #fafafa; border: 1px solid #d9d9d9; border-bottom: none;
+      border-radius: 6px 6px 0 0;
+    }
+    .rte-toolbar button, .rte-toolbar .rte-sep {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 30px; height: 30px; border: none; background: transparent;
+      border-radius: 4px; cursor: pointer; font-size: 13px; color: #666;
+      transition: background 0.2s, color 0.2s;
+    }
+    .rte-toolbar button:hover { background: #e8e8e8; color: #333; }
+    .rte-toolbar button.active { background: #fff5f0; color: #ff6b35; }
+    .rte-toolbar .rte-sep { width: 1px; background: #d9d9d9; margin: 0 4px; cursor: default; }
+    .rte-toolbar select { height: 30px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 13px; padding: 0 4px; background: #fff; }
+    .rte-content {
+      min-height: 400px; max-height: 600px; overflow-y: auto;
+      border: 1px solid #d9d9d9; border-top: none;
+      border-radius: 0 0 6px 6px; padding: 14px; font-size: 15px;
+      line-height: 1.8; outline: none; background: #fff;
+    }
+    .rte-content:focus { border-color: #ff6b35; box-shadow: 0 0 0 2px rgba(255,107,53,0.1); }
+    .rte-content p { margin-bottom: 12px; }
+    .rte-content img { max-width: 100%; border-radius: 6px; margin: 8px 0; }
+    .rte-content h3 { margin: 16px 0 8px; }
+    .rte-content a { color: #ff6b35; }
+
+    /* 按钮 */
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; font-weight: 500; transition: background 0.2s, transform 0.2s, opacity 0.2s; }
+    .btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-primary { background: #ff6b35; color: #fff; }
+    .btn-success { background: #52c41a; color: #fff; }
+    .btn-danger { background: #ff4d4f; color: #fff; }
+    .btn-default { background: #f5f5f5; color: #666; }
+    .btn-sm { padding: 4px 12px; font-size: 12px; }
+    .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* 标签输入 */
+    .tag-input-wrap {
+      display: flex; flex-wrap: wrap; gap: 6px; padding: 6px;
+      border: 1px solid #d9d9d9; border-radius: 6px; min-height: 38px;
+      align-items: center; cursor: text; background: #fff;
+    }
+    .tag-input-wrap:focus-within { border-color: #ff6b35; box-shadow: 0 0 0 2px rgba(255,107,53,0.1); }
+    .tag-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; background: #fff5f0; color: #ff6b35;
+      border-radius: 12px; font-size: 12px;
+    }
+    .tag-chip .tag-close { cursor: pointer; font-size: 14px; line-height: 1; opacity: 0.6; }
+    .tag-chip .tag-close:hover { opacity: 1; }
+    .tag-input { border: none; outline: none; font-size: 13px; min-width: 80px; flex: 1; padding: 2px 4px; }
+
+    /* APP选择器 */
+    .app-selector-list { display: flex; flex-wrap: wrap; gap: 8px; max-height: 200px; overflow-y: auto; }
+    .app-selector-item {
+      display: flex; align-items: center; gap: 6px; padding: 6px 12px;
+      border: 1px solid #e8e8e8; border-radius: 6px; cursor: pointer;
+      font-size: 13px; transition: all 0.2s;
+    }
+    .app-selector-item:hover { border-color: #ff6b35; }
+    .app-selector-item.selected { background: #fff5f0; border-color: #ff6b35; color: #ff6b35; }
+    .app-selector-item .app-id { font-size: 11px; color: #bbb; }
+
+    /* 图片上传区 */
+    .img-upload-area {
+      border: 2px dashed #d9d9d9; border-radius: 8px; padding: 24px;
+      text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s;
+    }
+    .img-upload-area:hover { border-color: #ff6b35; background: #fffaf7; }
+    .img-upload-area.has-image { padding: 8px; }
+    .img-upload-area img { max-width: 100%; max-height: 160px; border-radius: 6px; }
+
+    /* 模态框 */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.45); z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal { background: #fff; border-radius: 12px; padding: 24px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+    .modal h3 { font-size: 16px; margin-bottom: 16px; }
+    .modal .form-group { margin-bottom: 12px; }
+    .modal .btn-group { justify-content: flex-end; margin-top: 16px; }
+
+    /* Toast */
+    .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 10px 24px; background: rgba(0,0,0,0.78); color: #fff; border-radius: 20px; font-size: 13px; z-index: 9999; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+    .toast.show { opacity: 1; }
+    .toast.success { background: #52c41a; }
+    .toast.error { background: #ff4d4f; }
+
+    @media (max-width: 768px) {
+      .main { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; max-height: 200px; }
+      .editor { padding: 16px; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-logo"><span>挖赚</span>网 · 专题编辑器</div>
+    <div class="topbar-actions">
+      <a class="topbar-link" href="admin.html">← 返回后台</a>
+      <a class="topbar-link" href="special-detail.html?id=1" target="_blank">预览专题页</a>
+      <span style="color:#52c41a;font-size:12px;" id="syncStatus">● 已连接</span>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- 左侧专题列表 -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h3>专题列表</h3>
+        <button class="btn btn-primary btn-sm" onclick="createNewTopic()">+ 新建</button>
+      </div>
+      <div class="sidebar-list" id="topicList"></div>
+    </div>
+
+    <!-- 右侧编辑区 -->
+    <div class="editor" id="editorArea">
+      <div class="editor-empty">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        <p>选择一个专题开始编辑，或点击"+ 新建"创建专题</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 图片/链接插入模态框 -->
+  <div class="modal-overlay" id="linkModal" style="display:none;">
+    <div class="modal">
+      <h3 id="linkModalTitle">插入链接</h3>
+      <div class="form-group">
+        <label>URL地址</label>
+        <input type="text" id="linkUrl" placeholder="https://...">
+      </div>
+      <div class="form-group" id="linkTextGroup">
+        <label>显示文本</label>
+        <input type="text" id="linkText" placeholder="链接文字">
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-default" onclick="closeLinkModal()">取消</button>
+        <button class="btn btn-primary" onclick="insertLink()">确定插入</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ===== 全局状态 =====
+    var _allTopics = [];
+    var _currentTopicId = null;
+    var _allApps = [];
+    var _allArticles = [];
+    var _siteData = null;
+    var _linkMode = 'link'; // 'link' | 'image'
+
+    // ===== 初始化 =====
+    async function init() {
+      await loadData();
+      renderTopicList();
+      initSSE();
+    }
+
+    async function loadData() {
+      try {
+        var resp = await fetch('/data.json?' + Date.now());
+        _siteData = await resp.json();
+        _allTopics = (_siteData.special && _siteData.special.topics) ? _siteData.special.topics : [];
+        _allArticles = (_siteData.special && _siteData.special.articles) ? _siteData.special.articles : [];
+
+        // 收集所有APP
+        _allApps = [];
+        if (_siteData.home && _siteData.home.recommend) _allApps = _allApps.concat(_siteData.home.recommend);
+        if (_siteData.home && _siteData.home.latestApps) _allApps = _allApps.concat(_siteData.home.latestApps);
+        if (_siteData.game && _siteData.game.apps) _allApps = _allApps.concat(_siteData.game.apps);
+        if (_siteData.task && _siteData.task.apps) _allApps = _allApps.concat(_siteData.task.apps);
+      } catch(e) {
+        showToast('数据加载失败: ' + e.message, 'error');
+      }
+    }
+
+    function initSSE() {
+      var es = new EventSource('/api/events');
+      es.addEventListener('file-changed', function(e) {
+        try {
+          var data = JSON.parse(e.data);
+          if (data.files && data.files.some(function(f) { return f === 'data.json'; })) {
+            if (data.source !== 'editor') {
+              document.getElementById('syncStatus').textContent = '● 数据已更新';
+              loadData().then(function() {
+                renderTopicList();
+                if (_currentTopicId) loadTopicToEditor(_currentTopicId);
+                document.getElementById('syncStatus').textContent = '● 已连接';
+              });
+            }
+          }
+        } catch(ex) {}
+      });
+      es.addEventListener('connected', function() { document.getElementById('syncStatus').textContent = '● 已连接'; });
+      es.onerror = function() { document.getElementById('syncStatus').textContent = '○ 连接断开'; };
+    }
+
+    // ===== 专题列表渲染 =====
+    function renderTopicList() {
+      var el = document.getElementById('topicList');
+      if (_allTopics.length === 0) {
+        el.innerHTML = '<div style="padding:24px;text-align:center;color:#ccc;">暂无专题，点击"+ 新建"创建</div>';
+        return;
+      }
+      el.innerHTML = _allTopics.map(function(t) {
+        var active = _currentTopicId === t.id ? ' active' : '';
+        return '<div class="sidebar-item' + active + '" onclick="loadTopicToEditor(' + t.id + ')">' +
+          '<span class="item-title">' + t.title + '</span>' +
+          '<span class="item-time">' + (t.publishTime ? t.publishTime.slice(0, 10) : '') + '</span>' +
+          '<span class="item-del" onclick="event.stopPropagation();deleteTopic(' + t.id + ')" title="删除">✕</span>' +
+          '</div>';
+      }).join('');
+    }
+
+    // ===== 加载专题到编辑器 =====
+    function loadTopicToEditor(id) {
+      _currentTopicId = id;
+      var t = _allTopics.find(function(x) { return x.id === id; });
+      if (!t) return;
+
+      document.querySelectorAll('.sidebar-item').forEach(function(el) {
+        el.classList.toggle('active', el.querySelector('.item-title') && el.onclick);
+      });
+      // 高亮当前
+      var items = document.querySelectorAll('.sidebar-item');
+      items.forEach(function(item) {
+        var titleEl = item.querySelector('.item-title');
+        if (titleEl && titleEl.textContent === t.title) item.classList.add('active');
+      });
+
+      var editor = document.getElementById('editorArea');
+      editor.innerHTML = buildEditorHTML(t);
+      bindEditorEvents();
+      initRichTextEditor();
+
+      // 同步富文本内容
+      var rte = document.getElementById('rteContent');
+      if (rte) rte.innerHTML = t.content || '';
+    }
+
+    function buildEditorHTML(t) {
+      return '' +
+      '<div class="form-card">' +
+        '<h3>基本信息</h3>' +
+        '<div class="form-grid">' +
+          '<div class="form-group"><label>专题标题 <span class="hint">*必填</span></label><input type="text" id="etTitle" value="' + escAttr(t.title) + '"></div>' +
+          '<div class="form-group"><label>副标题</label><input type="text" id="etSubtitle" value="' + escAttr(t.subtitle || '') + '"></div>' +
+          '<div class="form-group"><label>作者</label><input type="text" id="etAuthor" value="' + escAttr(t.author || '') + '"></div>' +
+          '<div class="form-group"><label>来源</label><input type="text" id="etSource" value="' + escAttr(t.source || '') + '"></div>' +
+          '<div class="form-group"><label>发布时间</label><input type="datetime-local" id="etPublishTime" value="' + (t.publishTime ? t.publishTime.replace(' ', 'T') : '') + '"></div>' +
+          '<div class="form-group"><label>分类</label><input type="text" id="etCategory" value="' + escAttr(t.category || '') + '"></div>' +
+          '<div class="form-group full"><label>摘要描述</label><textarea id="etSummary" rows="3">' + escHtml(t.summary || '') + '</textarea></div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="form-card">' +
+        '<h3>富文本内容</h3>' +
+        '<div class="rte-toolbar">' +
+          '<select onchange="execRTE(\'formatBlock\', this.value);this.selectedIndex=0;" style="width:auto;">' +
+            '<option value="">正文</option><option value="h2">大标题</option><option value="h3">小标题</option><option value="p">段落</option><option value="blockquote">引用</option>' +
+          '</select>' +
+          '<span class="rte-sep"></span>' +
+          '<button onclick="execRTE(\'bold\')" title="加粗"><b>B</b></button>' +
+          '<button onclick="execRTE(\'italic\')" title="斜体"><i>I</i></button>' +
+          '<button onclick="execRTE(\'underline\')" title="下划线"><u>U</u></button>' +
+          '<span class="rte-sep"></span>' +
+          '<button onclick="execRTE(\'insertUnorderedList\')" title="无序列表">•≡</button>' +
+          '<button onclick="execRTE(\'insertOrderedList\')" title="有序列表">1.</button>' +
+          '<span class="rte-sep"></span>' +
+          '<button onclick="openLinkModal(\'link\')" title="插入链接">🔗</button>' +
+          '<button onclick="openLinkModal(\'image\')" title="插入图片">🖼</button>' +
+          '<button onclick="insertAppCard()" title="插入APP卡片">📱</button>' +
+          '<button onclick="insertGifPrompt()" title="插入GIF动图">🎞</button>' +
+          '<span class="rte-sep"></span>' +
+          '<button onclick="execRTE(\'removeFormat\')" title="清除格式">✕</button>' +
+          '<button onclick="execRTE(\'insertHorizontalRule\')" title="分隔线">—</button>' +
+        '</div>' +
+        '<div class="rte-content" id="rteContent" contenteditable="true">' + (t.content || '') + '</div>' +
+      '</div>' +
+
+      '<div class="form-card">' +
+        '<h3>标签</h3>' +
+        '<div class="tag-input-wrap" id="tagWrap" onclick="document.getElementById(\'tagInput\').focus()">' +
+          '<input class="tag-input" id="tagInput" placeholder="输入标签后按回车添加..." onkeydown="handleTagKey(event)">' +
+        '</div>' +
+        '<input type="hidden" id="etTags" value="' + escAttr(JSON.stringify(t.tags || [])) + '">' +
+      '</div>' +
+
+      '<div class="form-card">' +
+        '<h3>关联APP</h3>' +
+        '<p style="font-size:12px;color:#999;margin-bottom:8px;">勾选要在专题中展示的APP（用于热门APP、排行榜等模块）</p>' +
+        '<div class="app-selector-list" id="appSelector"></div>' +
+        '<input type="hidden" id="etRelatedApps" value="' + escAttr(JSON.stringify(t.relatedApps || [])) + '">' +
+        '<input type="hidden" id="etHotApps" value="' + escAttr(JSON.stringify(t.hotApps || [])) + '">' +
+        '<input type="hidden" id="etDownloadRank" value="' + escAttr(JSON.stringify(t.downloadRank || [])) + '">' +
+      '</div>' +
+
+      '<div class="form-card">' +
+        '<h3>关联文章</h3>' +
+        '<p style="font-size:12px;color:#999;margin-bottom:8px;">选择热门文章模块中展示的文章</p>' +
+        '<div class="app-selector-list" id="articleSelector"></div>' +
+        '<input type="hidden" id="etHotArticles" value="' + escAttr(JSON.stringify(t.hotArticles || [])) + '">' +
+      '</div>' +
+
+      '<div class="form-card">' +
+        '<h3>SEO设置</h3>' +
+        '<div class="form-grid">' +
+          '<div class="form-group full"><label>SEO标题</label><input type="text" id="etSeoTitle" value="' + escAttr(t.seoTitle || '') + '"></div>' +
+          '<div class="form-group full"><label>SEO描述</label><textarea id="etSeoDesc" rows="2">' + escHtml(t.seoDesc || '') + '</textarea></div>' +
+          '<div class="form-group full"><label>SEO关键词（逗号分隔）</label><input type="text" id="etSeoKeywords" value="' + escAttr(t.seoKeywords || '') + '"></div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div style="display:flex;gap:12px;justify-content:flex-end;padding:0 0 24px;">' +
+        '<button class="btn btn-default" onclick="previewTopic()">预览</button>' +
+        '<button class="btn btn-primary" onclick="saveTopic()">💾 保存专题</button>' +
+      '</div>';
+    }
+
+    function escAttr(s) { return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function escHtml(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+    // ===== 编辑器事件绑定 =====
+    function bindEditorEvents() {
+      // APP选择器
+      renderAppSelector();
+      // 文章选择器
+      renderArticleSelector();
+      // 标签初始化
+      renderTagChips();
+    }
+
+    function renderAppSelector() {
+      var el = document.getElementById('appSelector');
+      if (!el) return;
+      var t = _allTopics.find(function(x) { return x.id === _currentTopicId; });
+      var selectedIds = t ? (t.hotApps || []) : [];
+
+      el.innerHTML = _allApps.map(function(app) {
+        var sel = selectedIds.indexOf(app.id) >= 0;
+        return '<span class="app-selector-item' + (sel ? ' selected' : '') + '" data-id="' + app.id + '" onclick="toggleAppSelect(this, ' + app.id + ', \'hotApps\')">' +
+          '<span>' + app.name + '</span><span class="app-id">ID:' + app.id + '</span>' +
+          '</span>';
+      }).join('');
+    }
+
+    function renderArticleSelector() {
+      var el = document.getElementById('articleSelector');
+      if (!el) return;
+      var t = _allTopics.find(function(x) { return x.id === _currentTopicId; });
+      var selectedIds = t ? (t.hotArticles || []) : [];
+
+      el.innerHTML = _allArticles.map(function(a) {
+        var sel = selectedIds.indexOf(a.id) >= 0;
+        return '<span class="app-selector-item' + (sel ? ' selected' : '') + '" data-id="' + a.id + '" onclick="toggleArticleSelect(this, ' + a.id + ')">' +
+          '<span>' + a.title + '</span>' +
+          '</span>';
+      }).join('');
+    }
+
+    function toggleAppSelect(el, id, field) {
+      el.classList.toggle('selected');
+      var input = document.getElementById('etHotApps');
+      var ids = JSON.parse(input.value || '[]');
+      if (el.classList.contains('selected')) {
+        if (ids.indexOf(id) < 0) ids.push(id);
+      } else {
+        ids = ids.filter(function(x) { return x !== id; });
+      }
+      input.value = JSON.stringify(ids);
+    }
+
+    function toggleArticleSelect(el, id) {
+      el.classList.toggle('selected');
+      var input = document.getElementById('etHotArticles');
+      var ids = JSON.parse(input.value || '[]');
+      if (el.classList.contains('selected')) {
+        if (ids.indexOf(id) < 0) ids.push(id);
+      } else {
+        ids = ids.filter(function(x) { return x !== id; });
+      }
+      input.value = JSON.stringify(ids);
+    }
+
+    // ===== 标签处理 =====
+    function renderTagChips() {
+      var input = document.getElementById('etTags');
+      var tags = JSON.parse(input.value || '[]');
+      var wrap = document.getElementById('tagWrap');
+      var tagInput = document.getElementById('tagInput');
+      // 清除已有chips
+      wrap.querySelectorAll('.tag-chip').forEach(function(c) { c.remove(); });
+      tags.forEach(function(tag, idx) {
+        var chip = document.createElement('span');
+        chip.className = 'tag-chip';
+        chip.innerHTML = tag + '<span class="tag-close" onclick="removeTag(' + idx + ')">×</span>';
+        wrap.insertBefore(chip, tagInput);
+      });
+    }
+
+    function handleTagKey(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        var val = e.target.value.trim();
+        if (!val) return;
+        var input = document.getElementById('etTags');
+        var tags = JSON.parse(input.value || '[]');
+        if (tags.indexOf(val) < 0) {
+          tags.push(val);
+          input.value = JSON.stringify(tags);
+          renderTagChips();
+        }
+        e.target.value = '';
+      }
+    }
+
+    function removeTag(idx) {
+      var input = document.getElementById('etTags');
+      var tags = JSON.parse(input.value || '[]');
+      tags.splice(idx, 1);
+      input.value = JSON.stringify(tags);
+      renderTagChips();
+    }
+
+    // ===== 富文本编辑器 =====
+    function initRichTextEditor() {
+      var rte = document.getElementById('rteContent');
+      if (!rte) return;
+      rte.addEventListener('input', function() {
+        updateRTEToolbarState();
+      });
+      rte.addEventListener('keyup', updateRTEToolbarState);
+      rte.addEventListener('mouseup', updateRTEToolbarState);
+    }
+
+    function execRTE(command, value) {
+      document.execCommand(command, false, value || null);
+      document.getElementById('rteContent').focus();
+      updateRTEToolbarState();
+    }
+
+    function updateRTEToolbarState() {
+      var btns = document.querySelectorAll('.rte-toolbar button');
+      btns.forEach(function(btn) {
+        var cmd = btn.getAttribute('onclick');
+        if (!cmd) return;
+        var match = cmd.match(/execRTE\('(\w+)'\)/);
+        if (match) {
+          btn.classList.toggle('active', document.queryCommandState(match[1]));
+        }
+      });
+    }
+
+    // ===== 链接/图片模态框 =====
+    function openLinkModal(mode) {
+      _linkMode = mode;
+      document.getElementById('linkModal').style.display = 'flex';
+      document.getElementById('linkUrl').value = '';
+      document.getElementById('linkText').value = '';
+      if (mode === 'link') {
+        document.getElementById('linkModalTitle').textContent = '插入链接';
+        document.getElementById('linkTextGroup').style.display = 'flex';
+      } else {
+        document.getElementById('linkModalTitle').textContent = '插入图片';
+        document.getElementById('linkTextGroup').style.display = 'none';
+      }
+      document.getElementById('linkUrl').focus();
+    }
+
+    function closeLinkModal() {
+      document.getElementById('linkModal').style.display = 'none';
+    }
+
+    function insertLink() {
+      var url = document.getElementById('linkUrl').value.trim();
+      if (!url) return;
+      if (_linkMode === 'link') {
+        var text = document.getElementById('linkText').value.trim() || url;
+        execRTE('createLink', url);
+        // 设置链接文字
+        var sel = window.getSelection();
+        if (sel.rangeCount > 0) {
+          var range = sel.getRangeAt(0);
+          if (range.collapsed) {
+            var a = document.createElement('a');
+            a.href = url;
+            a.textContent = text;
+            a.target = '_blank';
+            range.insertNode(a);
+          }
+        }
+      } else {
+        // 插入图片
+        var rte = document.getElementById('rteContent');
+        rte.focus();
+        var img = '<img src="' + url + '" alt="" style="max-width:100%;border-radius:8px;margin:8px 0;">';
+        document.execCommand('insertHTML', false, img);
+      }
+      closeLinkModal();
+    }
+
+    function insertAppCard() {
+      var appId = prompt('请输入APP的ID（在data.json中game.apps或task.apps的id）:');
+      if (!appId) return;
+      var app = _allApps.find(function(a) { return a.id === parseInt(appId); });
+      if (!app) { alert('未找到该APP'); return; }
+
+      var iconSrc = app.icon ? ('/' + app.icon) : '';
+      var cardHtml = '<div class="topic-app-card">' +
+        '<div class="topic-app-icon">' + (iconSrc ? '<img src="' + iconSrc + '" alt="' + app.name + '">' : '<span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:linear-gradient(135deg,#ff6b35,#ff8f5e);color:#fff;font-weight:600;">' + app.name.substring(0,2) + '</span>') + '</div>' +
+        '<div class="topic-app-info">' +
+          '<div class="topic-app-name">' + app.name + '</div>' +
+          '<div class="topic-app-desc">' + (app.desc || app.category || '') + '</div>' +
+          '<div class="topic-app-meta">' + (app.downloads || 0) + '次下载 · ' + (app.platform || '') + '</div>' +
+        '</div>' +
+        '<a class="topic-app-btn" href="detail.html?id=' + app.id + '&from=special">立即下载</a>' +
+        '</div><p>&nbsp;</p>';
+
+      document.getElementById('rteContent').focus();
+      document.execCommand('insertHTML', false, cardHtml);
+    }
+
+    function insertGifPrompt() {
+      var gifUrl = prompt('请输入GIF动图链接URL（支持本地路径如 uploads/images/xxx.gif 或远程URL）:');
+      if (!gifUrl) return;
+      var imgHtml = '<p style="text-align:center;"><img src="' + gifUrl + '" alt="" style="max-width:100%;border-radius:8px;margin:12px 0;" onerror="this.style.display=\'none\'"></p>';
+      document.getElementById('rteContent').focus();
+      document.execCommand('insertHTML', false, imgHtml);
+    }
+
+    // ===== 保存专题 =====
+    async function saveTopic() {
+      var t = _allTopics.find(function(x) { return x.id === _currentTopicId; });
+      if (!t) return showToast('未选中专题', 'error');
+
+      // 收集表单数据
+      t.title = document.getElementById('etTitle').value.trim();
+      t.subtitle = document.getElementById('etSubtitle').value.trim();
+      t.author = document.getElementById('etAuthor').value.trim();
+      t.source = document.getElementById('etSource').value.trim();
+      var pt = document.getElementById('etPublishTime').value;
+      t.publishTime = pt ? pt.replace('T', ' ') + ':00' : '';
+      t.category = document.getElementById('etCategory').value.trim();
+      t.summary = document.getElementById('etSummary').value.trim();
+      t.content = document.getElementById('rteContent').innerHTML;
+      t.tags = JSON.parse(document.getElementById('etTags').value || '[]');
+      t.hotApps = JSON.parse(document.getElementById('etHotApps').value || '[]');
+      t.hotArticles = JSON.parse(document.getElementById('etHotArticles').value || '[]');
+      t.downloadRank = JSON.parse(document.getElementById('etDownloadRank').value || '[]');
+      t.seoTitle = document.getElementById('etSeoTitle').value.trim();
+      t.seoDesc = document.getElementById('etSeoDesc').value.trim();
+      t.seoKeywords = document.getElementById('etSeoKeywords').value.trim();
+
+      if (!t.title) return showToast('请填写专题标题', 'error');
+
+      // 保存到 data.json
+      _siteData.special.topics = _allTopics;
+      try {
+        var resp = await fetch('/api/file', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filePath: 'data.json', content: JSON.stringify(_siteData, null, 2) })
+        });
+        var result = await resp.json();
+        if (result.success) {
+          showToast('保存成功！前端将自动刷新', 'success');
+          renderTopicList();
+        } else {
+          showToast('保存失败: ' + (result.error || '未知错误'), 'error');
+        }
+      } catch(e) {
+        showToast('网络错误: ' + e.message, 'error');
+      }
+    }
+
+    // ===== 新建专题 =====
+    function createNewTopic() {
+      var maxId = 0;
+      _allTopics.forEach(function(t) { if (t.id > maxId) maxId = t.id; });
+      var newTopic = {
+        id: maxId + 1,
+        title: '新专题 ' + (maxId + 1),
+        subtitle: '',
+        coverImage: '',
+        author: '挖赚网',
+        source: 'www.wazhuan.cn',
+        publishTime: new Date().toISOString().slice(0, 19).replace('T', ' '),
+        category: '',
+        tags: [],
+        summary: '',
+        content: '<h3>开始编辑</h3><p>在这里编写你的专题内容...</p>',
+        relatedApps: [],
+        hotApps: [],
+        hotArticles: [],
+        downloadRank: [],
+        url: 'special-detail.html?id=' + (maxId + 1),
+        seoTitle: '',
+        seoDesc: '',
+        seoKeywords: ''
+      };
+      _allTopics.push(newTopic);
+      _currentTopicId = newTopic.id;
+      renderTopicList();
+      loadTopicToEditor(newTopic.id);
+      showToast('新专题已创建，请编辑后保存', 'success');
+    }
+
+    // ===== 删除专题 =====
+    async function deleteTopic(id) {
+      if (!confirm('确定要删除该专题吗？此操作不可撤销。')) return;
+      _allTopics = _allTopics.filter(function(t) { return t.id !== id; });
+      _siteData.special.topics = _allTopics;
+      if (_currentTopicId === id) {
+        _currentTopicId = null;
+        document.getElementById('editorArea').innerHTML = '<div class="editor-empty"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg><p>选择一个专题开始编辑，或点击"+ 新建"创建专题</p></div>';
+      }
+      try {
+        var resp = await fetch('/api/file', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filePath: 'data.json', content: JSON.stringify(_siteData, null, 2) })
+        });
+        var result = await resp.json();
+        if (result.success) {
+          showToast('专题已删除', 'success');
+          renderTopicList();
+        }
+      } catch(e) {
+        showToast('删除失败: ' + e.message, 'error');
+      }
+    }
+
+    function previewTopic() {
+      if (_currentTopicId) {
+        window.open('special-detail.html?id=' + _currentTopicId, '_blank');
+      }
+    }
+
+    function showToast(msg, type) {
+      var toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = 'toast ' + (type || '');
+      toast.classList.add('show');
+      setTimeout(function() {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+
+    // 点击模态框背景关闭
+    document.addEventListener('click', function(e) {
+      if (e.target.id === 'linkModal') closeLinkModal();
+    });
+
+    // 键盘快捷键 Ctrl+S 保存
+    document.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        if (_currentTopicId) saveTopic();
+      }
+    });
+  </script>
+</body>
+</html>

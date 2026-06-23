@@ -1,0 +1,14 @@
+{
+  "name": "wazhuan-dev-server",
+  "version": "1.0.0",
+  "description": "挖赚网 - 本地开发服务器（实时预览 + 在线编辑 + 自动刷新）",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "dev:no-browser": "node server.js --no-browser",
+    "dev:port": "node server.js --port=3000"
+  },
+  "keywords": ["dev-server", "live-reload", "file-editor"],
+  "license": "MIT"
+}

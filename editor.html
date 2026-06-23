@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在线编辑器 - 挖赚网开发工具</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #1e1e2e;
+      --sidebar-bg: #181825;
+      --text: #cdd6f4;
+      --text-dim: #6c7086;
+      --accent: #f5a97f;
+      --accent2: #a6e3a1;
+      --border: #313244;
+      --hover: #2a2a3c;
+      --active: #313244;
+      --code-bg: #11111b;
+      --keyword: #cba6f7;
+      --string: #a6e3a1;
+      --number: #fab387;
+      --comment: #6c7086;
+      --tag: #89b4fa;
+      --attr: #f5c2e7;
+      --func: #89b4fa;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ===== 侧边栏 - 文件树 ===== */
+    .sidebar {
+      width: 280px;
+      min-width: 200px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      resize: horizontal;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .sidebar-header h2 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sidebar-actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    .btn-icon {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: transparent;
+      color: var(--text-dim);
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .btn-icon:hover {
+      background: var(--hover);
+      color: var(--text);
+    }
+
+    .file-tree {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 0;
+      user-select: none;
+    }
+
+    .file-tree::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .file-tree::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    .tree-item {
+      display: flex;
+      align-items: center;
+      padding: 5px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text);
+      transition: background 0.1s;
+      white-space: nowrap;
+      gap: 6px;
+      position: relative;
+    }
+
+    .tree-item:hover {
+      background: var(--hover);
+    }
+
+    .tree-item.active {
+      background: var(--active);
+      color: var(--accent);
+    }
+
+    .tree-item.modified::after {
+      content: '●';
+      position: absolute;
+      right: 8px;
+      color: var(--accent);
+      font-size: 10px;
+    }
+
+    .tree-icon {
+      font-size: 14px;
+      width: 16px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .tree-icon.dir { color: #89b4fa; }
+    .tree-icon.html { color: #fab387; }
+    .tree-icon.css { color: #89b4fa; }
+    .tree-icon.js { color: #f9e2af; }
+    .tree-icon.json { color: #a6e3a1; }
+    .tree-icon.md { color: #89b4fa; }
+
+    .tree-children {
+      display: none;
+    }
+
+    .tree-children.open {
+      display: block;
+    }
+
+    .tree-toggle {
+      width: 14px;
+      height: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      flex-shrink: 0;
+      color: var(--text-dim);
+      transition: transform 0.15s;
+    }
+
+    .tree-toggle.expanded {
+      transform: rotate(90deg);
+    }
+
+    .tree-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tree-children .tree-item {
+      padding-left: 24px;
+    }
+
+    .tree-children .tree-children .tree-item {
+      padding-left: 36px;
+    }
+
+    .tree-children .tree-children .tree-children .tree-item {
+      padding-left: 48px;
+    }
+
+    /* ===== 主区域 ===== */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* ===== 顶部工具栏 ===== */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      flex-shrink: 0;
+      background: var(--bg);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 2px;
+      flex: 1;
+      overflow-x: auto;
+    }
+
+    .tabs::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    .tab {
+      padding: 6px 14px;
+      font-size: 13px;
+      color: var(--text-dim);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .tab:hover {
+      background: var(--hover);
+      color: var(--text);
+    }
+
+    .tab.active {
+      background: var(--active);
+      color: var(--accent);
+      border-color: var(--border);
+    }
+
+    .tab .tab-close {
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.15s;
+      line-height: 1;
+    }
+
+    .tab:hover .tab-close {
+      opacity: 0.6;
+    }
+
+    .tab .tab-close:hover {
+      opacity: 1;
+      color: #f38ba8;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      padding: 6px 14px;
+      font-size: 13px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #1e1e2e;
+      border-color: var(--accent);
+      font-weight: 500;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.85;
+    }
+
+    .btn-default {
+      background: transparent;
+      color: var(--text);
+    }
+
+    .btn-default:hover {
+      background: var(--hover);
+    }
+
+    .btn-success {
+      background: var(--accent2);
+      color: #1e1e2e;
+      border-color: var(--accent2);
+      font-weight: 500;
+    }
+
+    .btn-success:hover {
+      opacity: 0.85;
+    }
+
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 12px;
+    }
+
+    /* ===== 编辑器区域 ===== */
+    .editor-container {
+      flex: 1;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .editor-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .editor-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 16px;
+      background: var(--code-bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    .editor-header .file-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .editor-header .file-lang {
+      color: var(--accent);
+    }
+
+    /* 代码编辑器 */
+    .code-editor {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .line-numbers {
+      width: 50px;
+      background: var(--code-bg);
+      padding: 12px 0;
+      text-align: right;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-dim);
+      user-select: none;
+      overflow: hidden;
+      border-right: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .line-numbers span {
+      display: block;
+      padding: 0 12px 0 8px;
+    }
+
+    .code-textarea {
+      flex: 1;
+      padding: 12px 16px;
+      background: var(--code-bg);
+      color: transparent;
+      caret-color: #fff;
+      border: none;
+      outline: none;
+      resize: none;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      tab-size: 2;
+      white-space: pre;
+      overflow: auto;
+    }
+
+    .code-textarea::selection {
+      background: rgba(245, 169, 127, 0.3);
+    }
+
+    /* 代码高亮层 */
+    .highlight-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 12px 16px;
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre;
+      overflow: auto;
+      pointer-events: none;
+      color: var(--text);
+    }
+
+    .highlight-layer .hl-keyword { color: var(--keyword); }
+    .highlight-layer .hl-string { color: var(--string); }
+    .highlight-layer .hl-number { color: var(--number); }
+    .highlight-layer .hl-comment { color: var(--comment); font-style: italic; }
+    .highlight-layer .hl-tag { color: var(--tag); }
+    .highlight-layer .hl-attr { color: var(--attr); }
+    .highlight-layer .hl-func { color: var(--func); }
+
+    /* 预览面板 */
+    .preview-panel {
+      width: 40%;
+      min-width: 300px;
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+
+    .preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 12px;
+      background: #f0f0f0;
+      border-bottom: 1px solid #ddd;
+      flex-shrink: 0;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .preview-url {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      margin: 0 12px;
+      padding: 4px 10px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #333;
+    }
+
+    .preview-iframe {
+      flex: 1;
+      border: none;
+      width: 100%;
+    }
+
+    /* Toast提示 */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 13px;
+      z-index: 999;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: transform 0.3s, opacity 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast-success { background: #a6e3a1; color: #1e1e2e; }
+    .toast-error { background: #f38ba8; }
+    .toast-info { background: #89b4fa; color: #1e1e2e; }
+
+    /* 空状态 */
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dim);
+      gap: 12px;
+    }
+
+    .empty-state .icon {
+      font-size: 48px;
+      opacity: 0.5;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+    }
+
+    /* 快捷键提示 */
+    .shortcut-hint {
+      font-size: 11px;
+      color: var(--text-dim);
+      padding: 4px 12px;
+      background: var(--code-bg);
+      border-radius: 3px;
+    }
+
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .sidebar { width: 200px; min-width: 150px; }
+      .preview-panel { width: 100%; position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: none; }
+      .preview-panel.visible { display: flex; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 侧边栏 - 文件树 -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>📁 项目文件</h2>
+      <div class="sidebar-actions">
+        <button class="btn-icon" onclick="refreshFileTree()" title="刷新文件树">🔄</button>
+      </div>
+    </div>
+    <div class="file-tree" id="fileTree">
+      <div class="empty-state" style="padding:20px;">
+        <p>加载中...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主区域 -->
+  <div class="main">
+    <!-- 标签栏 -->
+    <div class="toolbar">
+      <div class="tabs" id="tabBar"></div>
+      <div class="toolbar-actions">
+        <span class="shortcut-hint">Ctrl+S 保存</span>
+        <button class="btn btn-success btn-sm" onclick="saveCurrentFile()" title="保存 (Ctrl+S)">💾 保存</button>
+        <button class="btn btn-default btn-sm" onclick="togglePreview()" title="切换预览面板">👁 预览</button>
+      </div>
+    </div>
+
+    <!-- 编辑器 + 预览 -->
+    <div class="editor-container">
+      <div class="editor-wrapper" id="editorWrapper">
+        <div class="editor-header" id="editorHeader">
+          <div class="file-info">
+            <span class="file-lang" id="fileLang">—</span>
+            <span id="filePath">未打开文件</span>
+          </div>
+          <span id="fileSize"></span>
+        </div>
+        <div class="code-editor" id="codeEditor">
+          <div class="line-numbers" id="lineNumbers"></div>
+          <div style="flex:1;position:relative;overflow:hidden;">
+            <div class="highlight-layer" id="highlightLayer"></div>
+            <textarea class="code-textarea" id="codeTextarea"
+              placeholder="从左侧文件树选择一个文件开始编辑..."
+              spellcheck="false"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- 预览面板 -->
+      <div class="preview-panel" id="previewPanel" style="display:none;">
+        <div class="preview-header">
+          <span>📱 实时预览</span>
+          <span class="preview-url" id="previewUrl">index.html</span>
+          <button class="btn-icon" onclick="refreshPreview()" title="刷新预览">🔄</button>
+          <button class="btn-icon" onclick="togglePreview()" title="关闭预览">✕</button>
+        </div>
+        <iframe class="preview-iframe" id="previewFrame" src="/index.html"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ===== 状态管理 =====
+    const state = {
+      openTabs: [],        // { path, name, content, originalContent, language, modified }
+      activeTabPath: null,
+      fileTree: null,
+      previewVisible: false,
+      previewPath: 'index.html'
+    };
+
+    // ===== DOM 引用 =====
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => document.querySelectorAll(sel);
+
+    // ===== 初始化 =====
+    async function init() {
+      await refreshFileTree();
+      setupKeyboardShortcuts();
+      setupTextareaSync();
+      connectSSE();
+    }
+
+    // ===== 获取文件树 =====
+    async function refreshFileTree() {
+      try {
+        const res = await fetch('/api/filetree');
+        const json = await res.json();
+        if (json.success) {
+          state.fileTree = json.data;
+          renderFileTree(state.fileTree);
+        }
+      } catch (e) {
+        console.error('获取文件树失败:', e);
+        showToast('无法连接到服务器', 'error');
+      }
+    }
+
+    // ===== 渲染文件树 =====
+    function renderFileTree(tree, container = $('#fileTree'), level = 0) {
+      if (level === 0) container.innerHTML = '';
+
+      // 排序：目录在前，然后按名称
+      const sorted = [...tree].sort((a, b) => {
+        if (a.type !== b.type) return a.type === 'directory' ? -1 : 1;
+        return a.name.localeCompare(b.name);
+      });
+
+      for (const node of sorted) {
+        const item = document.createElement('div');
+        item.className = 'tree-item';
+        item.dataset.path = node.path;
+        item.title = node.path;
+
+        if (node.type === 'directory') {
+          const toggle = document.createElement('span');
+          toggle.className = 'tree-toggle';
+          toggle.textContent = '▶';
+          item.appendChild(toggle);
+
+          const icon = document.createElement('span');
+          icon.className = 'tree-icon dir';
+          icon.textContent = '📁';
+          item.appendChild(icon);
+
+          const name = document.createElement('span');
+          name.className = 'tree-name';
+          name.textContent = node.name;
+          item.appendChild(name);
+
+          // 子节点容器
+          const childrenContainer = document.createElement('div');
+          childrenContainer.className = 'tree-children';
+          if (node.children) {
+            renderFileTree(node.children, childrenContainer, level + 1);
+          }
+
+          item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggle.classList.toggle('expanded');
+            childrenContainer.classList.toggle('open');
+          });
+
+          container.appendChild(item);
+          container.appendChild(childrenContainer);
+
+        } else {
+          const icon = document.createElement('span');
+          icon.className = 'tree-icon';
+          const ext = getExtension(node.name);
+          icon.className += ' ' + ext;
+          icon.textContent = getFileIcon(ext);
+          item.appendChild(icon);
+
+          const name = document.createElement('span');
+          name.className = 'tree-name';
+          name.textContent = node.name;
+          item.appendChild(name);
+
+          item.addEventListener('click', () => {
+            openFile(node.path, node.name);
+          });
+
+          container.appendChild(item);
+        }
+      }
+    }
+
+    // ===== 打开文件 =====
+    async function openFile(filePath, fileName) {
+      // 检查是否已打开
+      const existing = state.openTabs.find(t => t.path === filePath);
+      if (existing) {
+        switchTab(filePath);
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/file?path=${encodeURIComponent(filePath)}`);
+        const json = await res.json();
+        if (json.success) {
+          const ext = getExtension(fileName);
+          state.openTabs.push({
+            path: filePath,
+            name: fileName,
+            content: json.data.content,
+            originalContent: json.data.content,
+            language: ext,
+            modified: false,
+            size: json.data.size
+          });
+          renderTabs();
+          switchTab(filePath);
+        } else {
+          showToast('无法读取文件', 'error');
+        }
+      } catch (e) {
+        showToast('读取文件失败: ' + e.message, 'error');
+      }
+    }
+
+    // ===== 切换标签 =====
+    function switchTab(filePath) {
+      state.activeTabPath = filePath;
+
+      // 更新标签UI
+      renderTabs();
+
+      // 更新编辑器内容
+      const tab = state.openTabs.find(t => t.path === filePath);
+      if (!tab) return;
+
+      $('#fileLang').textContent = tab.language.toUpperCase();
+      $('#filePath').textContent = tab.path;
+      $('#fileSize').textContent = formatSize(tab.size);
+      $('#codeTextarea').value = tab.content;
+
+      updateLineNumbers();
+      updateHighlight();
+      updateTreeActive();
+
+      // 自动切换预览路径
+      if (tab.language === 'html') {
+        state.previewPath = tab.path;
+        updatePreviewUrl();
+      }
+    }
+
+    // ===== 关闭标签 =====
+    function closeTab(filePath, e) {
+      e.stopPropagation();
+      const idx = state.openTabs.findIndex(t => t.path === filePath);
+      if (idx === -1) return;
+
+      const tab = state.openTabs[idx];
+      if (tab.modified) {
+        if (!confirm(`文件 "${tab.name}" 有未保存的修改，确定关闭吗？`)) return;
+      }
+
+      state.openTabs.splice(idx, 1);
+
+      if (state.activeTabPath === filePath) {
+        if (state.openTabs.length > 0) {
+          const newIdx = Math.min(idx, state.openTabs.length - 1);
+          switchTab(state.openTabs[newIdx].path);
+        } else {
+          state.activeTabPath = null;
+          clearEditor();
+        }
+      }
+
+      renderTabs();
+    }
+
+    // ===== 渲染标签栏 =====
+    function renderTabs() {
+      const bar = $('#tabBar');
+      bar.innerHTML = state.openTabs.map(tab => `
+        <div class="tab ${tab.path === state.activeTabPath ? 'active' : ''}"
+             onclick="switchTab('${escapeHtml(tab.path)}')"
+             title="${escapeHtml(tab.path)}">
+          ${getFileIcon(tab.language)} ${tab.name}${tab.modified ? ' ●' : ''}
+          <span class="tab-close" onclick="closeTab('${escapeHtml(tab.path)}', event)">✕</span>
+        </div>
+      `).join('');
+    }
+
+    // ===== 清空编辑器 =====
+    function clearEditor() {
+      $('#fileLang').textContent = '—';
+      $('#filePath').textContent = '未打开文件';
+      $('#fileSize').textContent = '';
+      $('#codeTextarea').value = '';
+      $('#lineNumbers').innerHTML = '';
+      $('#highlightLayer').innerHTML = '';
+    }
+
+    // ===== 更新行号 =====
+    function updateLineNumbers() {
+      const textarea = $('#codeTextarea');
+      const lines = textarea.value.split('\n');
+      const container = $('#lineNumbers');
+      container.innerHTML = lines.map((_, i) => `<span>${i + 1}</span>`).join('');
+    }
+
+    // ===== 代码高亮 =====
+    function updateHighlight() {
+      const textarea = $('#codeTextarea');
+      const code = textarea.value;
+      const tab = state.openTabs.find(t => t.path === state.activeTabPath);
+      const lang = tab ? tab.language : 'txt';
+      const layer = $('#highlightLayer');
+
+      // 转义HTML
+      let highlighted = escapeHtml(code);
+
+      // 根据语言类型应用不同高亮规则
+      switch (lang) {
+        case 'html':
+          highlighted = highlightHTML(highlighted);
+          break;
+        case 'css':
+          highlighted = highlightCSS(highlighted);
+          break;
+        case 'js':
+          highlighted = highlightJS(highlighted);
+          break;
+        case 'json':
+          highlighted = highlightJSON(highlighted);
+          break;
+        default:
+          // 纯文本，不高亮
+          break;
+      }
+
+      layer.innerHTML = highlighted;
+
+      // 同步滚动
+      layer.scrollTop = textarea.scrollTop;
+      layer.scrollLeft = textarea.scrollLeft;
+    }
+
+    function highlightHTML(code) {
+      // HTML注释
+      code = code.replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="hl-comment">$1</span>');
+      // 标签
+      code = code.replace(/(&lt;\/?)([\w-]+)/g, '$1<span class="hl-tag">$2</span>');
+      // 属性
+      code = code.replace(/(\s)([\w-]+)(=)/g, '$1<span class="hl-attr">$2</span>$3');
+      // 字符串
+      code = code.replace(/(&quot;.*?&quot;)/g, '<span class="hl-string">$1</span>');
+      code = code.replace(/(&#39;.*?&#39;)/g, '<span class="hl-string">$1</span>');
+      return code;
+    }
+
+    function highlightCSS(code) {
+      // 注释
+      code = code.replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="hl-comment">$1</span>');
+      // 选择器/属性
+      code = code.replace(/([{;]\s*)([\w-]+)(\s*:)/g, '$1<span class="hl-attr">$2</span>$3');
+      // 值中的数字和颜色
+      code = code.replace(/(:\s*)([^;{}]+)/g, function(m, prefix, value) {
+        let v = value;
+        v = v.replace(/\b(\d+\.?\d*)(px|em|rem|%|vh|vw|s|ms|deg)?\b/g, '<span class="hl-number">$1$2</span>');
+        v = v.replace(/(#[0-9a-fA-F]{3,8})/g, '<span class="hl-string">$1</span>');
+        return prefix + v;
+      });
+      // @规则
+      code = code.replace(/(@[\w-]+)/g, '<span class="hl-keyword">$1</span>');
+      return code;
+    }
+
+    function highlightJS(code) {
+      // 注释
+      code = code.replace(/(\/\/[^\n]*)/g, '<span class="hl-comment">$1</span>');
+      code = code.replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="hl-comment">$1</span>');
+      // 字符串
+      code = code.replace(/(&quot;(?:\\.|[^&])*?&quot;)/g, '<span class="hl-string">$1</span>');
+      code = code.replace(/(&#39;(?:\\.|[^&])*?&#39;)/g, '<span class="hl-string">$1</span>');
+      code = code.replace(/(`(?:[^`\\]|\\.)*`)/g, '<span class="hl-string">$1</span>');
+      // 关键字
+      const keywords = ['function', 'var', 'let', 'const', 'if', 'else', 'for', 'while', 'return',
+        'class', 'new', 'this', 'async', 'await', 'try', 'catch', 'throw', 'import', 'export',
+        'default', 'from', 'switch', 'case', 'break', 'continue', 'typeof', 'instanceof', 'null',
+        'undefined', 'true', 'false', 'document', 'window', 'console', 'Object', 'Array', 'String',
+        'Number', 'Boolean', 'Promise', 'JSON', 'Math', 'Date', 'RegExp', 'Error'];
+      const kwPattern = new RegExp('\\b(' + keywords.join('|') + ')\\b', 'g');
+      code = code.replace(kwPattern, '<span class="hl-keyword">$1</span>');
+      // 数字
+      code = code.replace(/\b(\d+\.?\d*)\b/g, '<span class="hl-number">$1</span>');
+      // 函数调用
+      code = code.replace(/\b(\w+)(\s*\()/g, '<span class="hl-func">$1</span>$2');
+      return code;
+    }
+
+    function highlightJSON(code) {
+      // 字符串
+      code = code.replace(/(&quot;(?:\\.|[^&])*?&quot;)/g, '<span class="hl-string">$1</span>');
+      // 数字
+      code = code.replace(/\b(-?\d+\.?\d*([eE][+-]?\d+)?)\b/g, '<span class="hl-number">$1</span>');
+      // 布尔/null
+      code = code.replace(/\b(true|false|null)\b/g, '<span class="hl-keyword">$1</span>');
+      return code;
+    }
+
+    // ===== 文本区域同步 =====
+    function setupTextareaSync() {
+      const textarea = $('#codeTextarea');
+
+      textarea.addEventListener('input', () => {
+        updateLineNumbers();
+        updateHighlight();
+
+        // 标记修改状态
+        const tab = state.openTabs.find(t => t.path === state.activeTabPath);
+        if (tab) {
+          tab.content = textarea.value;
+          const wasModified = tab.modified;
+          tab.modified = (tab.content !== tab.originalContent);
+          if (wasModified !== tab.modified) {
+            renderTabs();
+            updateTreeModified();
+          }
+        }
+      });
+
+      textarea.addEventListener('scroll', () => {
+        const layer = $('#highlightLayer');
+        layer.scrollTop = textarea.scrollTop;
+        layer.scrollLeft = textarea.scrollLeft;
+      });
+
+      // Tab键支持
+      textarea.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const start = textarea.selectionStart;
+          const end = textarea.selectionEnd;
+          textarea.value = textarea.value.substring(0, start) + '  ' + textarea.value.substring(end);
+          textarea.selectionStart = textarea.selectionEnd = start + 2;
+          textarea.dispatchEvent(new Event('input'));
+        }
+      });
+    }
+
+    // ===== 键盘快捷键 =====
+    function setupKeyboardShortcuts() {
+      document.addEventListener('keydown', (e) => {
+        // Ctrl+S / Cmd+S 保存
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+          e.preventDefault();
+          saveCurrentFile();
+        }
+      });
+    }
+
+    // ===== 保存文件 =====
+    async function saveCurrentFile() {
+      const tab = state.openTabs.find(t => t.path === state.activeTabPath);
+      if (!tab) {
+        showToast('没有打开的文件', 'info');
+        return;
+      }
+
+      if (!tab.modified) {
+        showToast('文件未修改', 'info');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/file', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filePath: tab.path,
+            content: tab.content
+          })
+        });
+        const json = await res.json();
+        if (json.success) {
+          tab.originalContent = tab.content;
+          tab.modified = false;
+          renderTabs();
+          updateTreeModified();
+          showToast('✅ 保存成功: ' + tab.name, 'success');
+        } else {
+          showToast('保存失败: ' + json.error, 'error');
+        }
+      } catch (e) {
+        showToast('保存失败: ' + e.message, 'error');
+      }
+    }
+
+    // ===== 预览面板 =====
+    function togglePreview() {
+      state.previewVisible = !state.previewVisible;
+      const panel = $('#previewPanel');
+      panel.style.display = state.previewVisible ? 'flex' : 'none';
+      if (state.previewVisible) {
+        updatePreviewUrl();
+      }
+    }
+
+    function updatePreviewUrl() {
+      $('#previewUrl').textContent = state.previewPath;
+      $('#previewFrame').src = '/' + state.previewPath;
+    }
+
+    function refreshPreview() {
+      const frame = $('#previewFrame');
+      frame.src = frame.src;
+    }
+
+    // ===== SSE 连接（监听文件变更自动刷新预览） =====
+    let sseLastEventTime = 0;
+    function connectSSE() {
+      const es = new EventSource('/api/events');
+      es.addEventListener('file-changed', (e) => {
+        const data = JSON.parse(e.data);
+        const now = Date.now();
+        console.log('[SSE] 文件变更:', data.files);
+
+        // 忽略编辑器自己保存触发的事件（source=editor 是自己保存的）
+        if (data.source === 'editor') {
+          console.log('[SSE] 跳过自己触发的变更事件');
+          return;
+        }
+
+        // 防止短时间内重复处理（至少间隔2秒）
+        if (now - sseLastEventTime < 2000) {
+          console.log('[SSE] 跳过重复事件（2秒内）');
+          return;
+        }
+        sseLastEventTime = now;
+
+        // 如果当前打开的文件被外部修改，提示用户
+        if (state.activeTabPath && data.files.includes(state.activeTabPath)) {
+          showToast('⚠ 文件已被外部修改，请刷新', 'info');
+        }
+
+        // 如果预览面板打开且预览的文件发生变更，自动刷新
+        if (state.previewVisible) {
+          setTimeout(() => refreshPreview(), 500);
+        }
+      });
+      es.addEventListener('connected', () => {
+        console.log('[SSE] 已连接到服务器');
+      });
+      es.onerror = () => {
+        console.log('[SSE] 连接断开');
+      };
+    }
+
+    // ===== 更新文件树中的活动/修改标记 =====
+    function updateTreeActive() {
+      $$('.tree-item').forEach(item => {
+        item.classList.toggle('active', item.dataset.path === state.activeTabPath);
+      });
+    }
+
+    function updateTreeModified() {
+      $$('.tree-item').forEach(item => {
+        const tab = state.openTabs.find(t => t.path === item.dataset.path);
+        if (tab) {
+          item.classList.toggle('modified', tab.modified);
+        }
+      });
+    }
+
+    // ===== Toast 提示 =====
+    let toastTimer;
+    function showToast(msg, type = 'info') {
+      const toast = $('#toast');
+      clearTimeout(toastTimer);
+      toast.textContent = msg;
+      toast.className = `toast toast-${type} show`;
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    // ===== 工具函数 =====
+    function getExtension(filename) {
+      const parts = filename.split('.');
+      return parts.length > 1 ? parts.pop().toLowerCase() : 'txt';
+    }
+
+    function getFileIcon(ext) {
+      const icons = {
+        html: '🌐', css: '🎨', js: '📜', json: '📋',
+        md: '📝', txt: '📄', xml: '📰', svg: '🖼',
+        png: '🖼', jpg: '🖼', jpeg: '🖼', gif: '🖼',
+        webp: '🖼', ico: '⭐'
+      };
+      return icons[ext] || '📄';
+    }
+
+    function formatSize(bytes) {
+      if (!bytes) return '';
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // ===== 启动 =====
+    document.addEventListener('DOMContentLoaded', function() {
+      init();
+    });
+  </script>
+  <script src="back-to-top.js"></script>
+</body>
+</html>
